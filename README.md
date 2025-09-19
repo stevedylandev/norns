@@ -1,4 +1,4 @@
-# Eos
+# Norns
 
 To install dependencies:
 
