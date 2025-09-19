@@ -12,23 +12,65 @@
       font-family: ui-monospace, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
       min-height: 100vh;
       width: 100%;
-    }
-
-    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      width: 100%;
+    }
+
+    .container {
+      border: 1px solid white;
+      border-radius: 5px;
+      width: 400px;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .component-showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .component-label {
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+
+    .code-snippet {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 3px;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
     }
 
   </style>
 </head>
 <body>
-  <div class="container">
-  <h1>Norn</h1>
-  <connect-wallet></connect-wallet>
+  <div class="header">
+    <h1>Norns</h1>
+    <p>Interopable web components for dApps</p>
+  </div>
+  <div class="component-showcase">
+    <div class="container">
+      <connect-wallet></connect-wallet>
+    </div>
+    <div class="component-label">connect-wallet</div>
+    <div class="code-snippet">
+      npx norns add connect-wallet
+    </div>
   </div>
 
   <script src="components/connect-wallet.js"></script>

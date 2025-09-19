@@ -1,5 +1,5 @@
 {
-	"name": "eos",
+	"name": "norns",
 	"module": "index.ts",
 	"type": "module",
 	"devDependencies": {
