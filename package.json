@@ -1,10 +1,25 @@
 {
 	"name": "norns",
-	"module": "index.ts",
+	"version": "0.1.0",
+	"description": "A Web Component Library CLI",
+	"main": "dist/index.js",
+	"bin": {
+		"norns": "./dist/index.js"
+	},
 	"type": "module",
+	"files": [
+		"dist"
+	],
 	"scripts": {
+		"build": "bun build src/index.ts --outdir dist --target node && cp -r src/components dist/",
 		"dev": "bun index.html --console"
 	},
+	"keywords": [
+		"web-components",
+		"cli",
+		"shadcn",
+		"components"
+	],
 	"devDependencies": {
 		"@types/bun": "latest"
 	},
