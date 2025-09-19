@@ -2,6 +2,9 @@
 	"name": "norns",
 	"module": "index.ts",
 	"type": "module",
+	"scripts": {
+		"dev": "bun index.html --console"
+	},
 	"devDependencies": {
 		"@types/bun": "latest"
 	},
