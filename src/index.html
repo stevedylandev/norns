@@ -3,7 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Norn</title>
+    <title>Norns</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="description" content="Interoperable web components for decentralized apps">
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://norns.so">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Norns">
+    <meta property="og:description" content="Interoperable web components for decentralized apps">
+    <meta property="og:image" content="/og.png">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="norns.so">
+    <meta property="twitter:url" content="https://norns.so">
+    <meta name="twitter:title" content="Norns">
+    <meta name="twitter:description" content="Interoperable web components for decentralized apps">
+    <meta name="twitter:image" content="/og.png">
+
   <style>
 
     body {
@@ -64,12 +85,23 @@
       max-width: 300px;
     }
 
+    .header img {
+      width: 100px;
+      height: 100px;
+      margin-bottom: -35px;
+    }
+
+    .header p {
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
   <main>
   <div class="header">
-    <h1>Norns</h1>
+    <img src="logo.svg" alt="norns logo" />
+    <h1>norns</h1>
     <p>Interopable web components for decentralized applications</p>
   </div>
   <div class="component-showcase">
@@ -78,7 +110,7 @@
     </div>
     <div class="component-label">connect-wallet</div>
     <div class="code-snippet">
-      npx norns add connect-wallet
+      npx norns-ui@latest add connect-wallet
     </div>
   </div>
   </main>
