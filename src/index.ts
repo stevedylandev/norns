@@ -1,6 +1,7 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import { parseArgs } from "util";
+import { readFile, writeFile } from "node:fs/promises";
 import { mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -53,10 +54,10 @@ async function addComponent(componentName: string | undefined) {
 			process.exit(1);
 		}
 
-		const componentCode = await Bun.file(sourceComponentPath).text();
+		const componentCode = await readFile(sourceComponentPath, "utf8");
 		const componentPath = join(componentsDir, `${componentName}.js`);
 
-		await Bun.write(componentPath, componentCode);
+		await writeFile(componentPath, componentCode, "utf8");
 
 		console.log(`✅ Added ${componentName} to ${componentPath}`);
 		console.log(`📝 You can now use it in your HTML:`);
@@ -86,11 +87,11 @@ Available Components:
 `);
 }
 
-// Parse command line arguments using Bun's parseArgs
-// Bun.argv includes [bun_path, script_path, ...actual_args]
+// Parse command line arguments using Node's parseArgs
+// process.argv includes [node_path, script_path, ...actual_args]
 // We need to slice from index 2 to get the actual command arguments
 const { values, positionals } = parseArgs({
-	args: Bun.argv.slice(2),
+	args: process.argv.slice(2),
 	options: {
 		help: { type: "boolean", short: "h" },
 	},

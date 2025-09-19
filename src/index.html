@@ -15,7 +15,14 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: start;
+    }
+
+    main {
+      display: flex;
+      align-items: start;
+      flex-direction: column;
+      padding: 2rem 0;
     }
 
     .container {
@@ -31,7 +38,7 @@
     .component-showcase {
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: start;
       gap: 1rem;
     }
 
@@ -52,16 +59,18 @@
     }
 
     .header {
-      text-align: center;
+      text-align: start;
       margin-bottom: 2rem;
+      max-width: 300px;
     }
 
   </style>
 </head>
 <body>
+  <main>
   <div class="header">
     <h1>Norns</h1>
-    <p>Interopable web components for dApps</p>
+    <p>Interopable web components for decentralized applications</p>
   </div>
   <div class="component-showcase">
     <div class="container">
@@ -72,6 +81,7 @@
       npx norns add connect-wallet
     </div>
   </div>
+  </main>
 
   <script src="components/connect-wallet.js"></script>
 </body>
