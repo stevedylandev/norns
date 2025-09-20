@@ -1,4 +1,5 @@
 class ConnectWallet extends HTMLElement {
+	// Constructor and lifecycle methods
 	constructor() {
 		super();
 		this.attachShadow({ mode: "open" });
@@ -20,7 +21,6 @@ class ConnectWallet extends HTMLElement {
 	attributeChangedCallback(name, oldValue, newValue) {
 		if (name === "chain-id" && oldValue !== newValue) {
 			this.chainId = newValue;
-			// If already connected, check if we need to switch chains
 			if (this.connected) {
 				this.checkAndSwitchChain();
 			}
@@ -28,11 +28,11 @@ class ConnectWallet extends HTMLElement {
 	}
 
 	connectedCallback() {
-		// Get chain-id from attribute
-		this.chainId = this.getAttribute("chain-id");
+		this.chainId = this.getAttribute("chain-id") || "0x1";
 		this.render();
 	}
 
+	// Wallet connection methods
 	async connect() {
 		if (window.ethereum) {
 			try {
@@ -45,12 +45,10 @@ class ConnectWallet extends HTMLElement {
 
 				this.address = accounts[0];
 
-				// Get current chain
 				this.currentChainId = await window.ethereum.request({
 					method: "eth_chainId",
 				});
 
-				// Switch to desired chain if specified
 				if (this.chainId && this.chainId !== this.currentChainId) {
 					await this.switchChain(this.chainId);
 				}
@@ -62,7 +60,6 @@ class ConnectWallet extends HTMLElement {
 				this.loading = false;
 				this.render();
 
-				// Dispatch custom event
 				this.dispatchEvent(
 					new CustomEvent("wallet-connected", {
 						detail: {
@@ -77,7 +74,6 @@ class ConnectWallet extends HTMLElement {
 				this.loading = false;
 				this.render();
 
-				// Dispatch error event
 				this.dispatchEvent(
 					new CustomEvent("wallet-error", {
 						detail: { error: error.message },
@@ -89,6 +85,20 @@ class ConnectWallet extends HTMLElement {
 		}
 	}
 
+	disconnect() {
+		this.connected = false;
+		this.address = "";
+		this.ensData = null;
+		this.currentChainId = null;
+		this.balance = "0";
+		this.showPopover = false;
+		this.copySuccess = false;
+		this.render();
+
+		this.dispatchEvent(new CustomEvent("wallet-disconnected"));
+	}
+
+	// Chain management methods
 	async switchChain(chainId) {
 		try {
 			await window.ethereum.request({
@@ -97,30 +107,8 @@ class ConnectWallet extends HTMLElement {
 			});
 			this.currentChainId = chainId;
 		} catch (switchError) {
-			// Chain not added to wallet
-			if (switchError.code === 4902) {
-				try {
-					await this.addChain(chainId);
-				} catch (addError) {
-					throw new Error(`Failed to add chain: ${addError.message}`);
-				}
-			} else {
-				throw new Error(`Failed to switch chain: ${switchError.message}`);
-			}
+			throw new Error(`Failed to switch chain: ${switchError.message}`);
 		}
-	}
-
-	async addChain(chainId) {
-		const chainConfig = this.getChainConfig(chainId);
-		if (!chainConfig) {
-			throw new Error(`Unknown chain ID: ${chainId}`);
-		}
-
-		await window.ethereum.request({
-			method: "wallet_addEthereumChain",
-			params: [chainConfig],
-		});
-		this.currentChainId = chainId;
 	}
 
 	async checkAndSwitchChain() {
@@ -140,49 +128,6 @@ class ConnectWallet extends HTMLElement {
 		}
 	}
 
-	getChainConfig(chainId) {
-		const chains = {
-			"0x1": {
-				chainId: "0x1",
-				chainName: "Ethereum Mainnet",
-				rpcUrls: ["https://eth.drpc.org"],
-				nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-				blockExplorerUrls: ["https://etherscan.io/"],
-			},
-			"0x89": {
-				chainId: "0x89",
-				chainName: "Polygon",
-				rpcUrls: ["https://polygon.drpc.org"],
-				nativeCurrency: { name: "MATIC", symbol: "MATIC", decimals: 18 },
-				blockExplorerUrls: ["https://polygonscan.com/"],
-			},
-			"0xa": {
-				chainId: "0xa",
-				chainName: "Optimism",
-				rpcUrls: ["https://optimism.drpc.org"],
-				nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-				blockExplorerUrls: ["https://optimistic.etherscan.io/"],
-			},
-			"0xa4b1": {
-				chainId: "0xa4b1",
-				chainName: "Arbitrum One",
-				rpcUrls: ["https://arbitrum.drpc.org"],
-				nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-				blockExplorerUrls: ["https://arbiscan.io/"],
-			},
-			"0x2105": {
-				chainId: "0x2105",
-				chainName: "Base",
-				rpcUrls: ["https://base.drpc.org"],
-				nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-				blockExplorerUrls: ["https://basescan.org/"],
-			},
-			// Add more chains as needed
-		};
-
-		return chains[chainId];
-	}
-
 	getChainName(chainId) {
 		const chainNames = {
 			"0x1": "Ethereum",
@@ -190,63 +135,11 @@ class ConnectWallet extends HTMLElement {
 			"0xa": "Optimism",
 			"0xa4b1": "Arbitrum",
 			"0x2105": "Base",
-			// Add more as needed
 		};
 		return chainNames[chainId] || `Chain ${chainId}`;
 	}
 
-	getChainSymbol(chainId) {
-		const chainSymbols = {
-			"0x1": "ETH",
-			"0x89": "MATIC",
-			"0xa": "ETH",
-			"0xa4b1": "ETH",
-			"0x2105": "ETH",
-			// Add more as needed
-		};
-		return chainSymbols[chainId] || "ETH";
-	}
-	renderProfile() {
-		const profileContainer = document.createElement("div");
-		profileContainer.className = "profile-container";
-
-		const profileDiv = document.createElement("div");
-		profileDiv.className = "profile";
-
-		const avatar = this.ensData?.avatar_small;
-		const displayName = this.getDisplayName();
-		const chainSymbol = this.getChainSymbol(this.currentChainId);
-
-		// Create avatar element
-		let avatarElement = "";
-		if (avatar) {
-			avatarElement = `<img src="${avatar}" alt="Avatar" class="avatar" onerror="this.style.display='none'">`;
-		} else {
-			avatarElement = `<div class="avatar-placeholder"></div>`;
-		}
-
-		profileDiv.innerHTML = `
-			${avatarElement}
-			<div class="profile-info">
-				<h3>${displayName}</h3>
-				<p>${this.balance} ${chainSymbol}</p>
-			</div>
-		`;
-
-		profileDiv.addEventListener("click", (e) => {
-			e.stopPropagation();
-			this.togglePopover();
-		});
-
-		profileContainer.appendChild(profileDiv);
-		this.shadowRoot.appendChild(profileContainer);
-
-		// Show popover if it was open before re-render
-		if (this.showPopover) {
-			this.showPopoverElement();
-		}
-	}
-
+	// Data fetching methods
 	async fetchEnsData() {
 		try {
 			const response = await fetch(`https://api.ensdata.net/${this.address}`);
@@ -270,7 +163,6 @@ class ConnectWallet extends HTMLElement {
 				params: [this.address, "latest"],
 			});
 
-			// Convert from wei to ether (divide by 10^18)
 			const balanceEth = parseInt(balanceWei, 16) / Math.pow(10, 18);
 			this.balance = balanceEth.toFixed(4);
 		} catch (error) {
@@ -279,6 +171,35 @@ class ConnectWallet extends HTMLElement {
 		}
 	}
 
+	// UI helper methods
+	getDisplayName() {
+		if (this.ensData?.ens_primary) {
+			return this.ensData.ens_primary;
+		}
+		return this.truncateAddress(this.address);
+	}
+
+	truncateAddress(addr) {
+		if (!addr) return "";
+		return addr.slice(0, 5) + "..." + addr.slice(-5);
+	}
+
+	async copyAddress() {
+		try {
+			await navigator.clipboard.writeText(this.address);
+			this.copySuccess = true;
+			this.showPopoverElement();
+
+			setTimeout(() => {
+				this.copySuccess = false;
+				this.showPopoverElement();
+			}, 1000);
+		} catch (error) {
+			console.error("Failed to copy address", error);
+		}
+	}
+
+	// Popover management methods
 	togglePopover() {
 		this.showPopover = !this.showPopover;
 		if (this.showPopover) {
@@ -300,7 +221,6 @@ class ConnectWallet extends HTMLElement {
 			this.shadowRoot.querySelector(".profile-container");
 		if (!profileContainer) return;
 
-		// Remove existing popover if any
 		const existingPopover = profileContainer.querySelector(".popover");
 		if (existingPopover) {
 			existingPopover.remove();
@@ -339,7 +259,6 @@ class ConnectWallet extends HTMLElement {
 
 		profileContainer.appendChild(popover);
 
-		// Add click outside listener to close popover
 		setTimeout(() => {
 			document.addEventListener("click", this.hidePopover.bind(this), {
 				once: true,
@@ -358,37 +277,7 @@ class ConnectWallet extends HTMLElement {
 		}
 	}
 
-	async copyAddress() {
-		try {
-			await navigator.clipboard.writeText(this.address);
-			this.copySuccess = true;
-			this.showPopoverElement(); // Re-render popover with checkmark
-
-			// Reset after 1 second
-			setTimeout(() => {
-				this.copySuccess = false;
-				this.showPopoverElement(); // Re-render popover back to normal
-			}, 1000);
-		} catch (error) {
-			console.error("Failed to copy address", error);
-		}
-	}
-
-	disconnect() {
-		this.connected = false;
-		this.address = "";
-		this.ensData = null;
-		this.currentChainId = null;
-		this.balance = "0";
-		this.showPopover = false;
-		this.copySuccess = false;
-		this.render();
-
-		// Dispatch custom event
-		this.dispatchEvent(new CustomEvent("wallet-disconnected"));
-	}
-
-	// Add CSS for chain display
+	// Render methods and styling
 	render() {
 		this.shadowRoot.innerHTML = `
 			<style>
@@ -556,16 +445,42 @@ class ConnectWallet extends HTMLElement {
 		}
 	}
 
-	getDisplayName() {
-		if (this.ensData?.ens_primary) {
-			return this.ensData.ens_primary;
-		}
-		return this.truncateAddress(this.address);
-	}
+	renderProfile() {
+		const profileContainer = document.createElement("div");
+		profileContainer.className = "profile-container";
 
-	truncateAddress(addr) {
-		if (!addr) return "";
-		return addr.slice(0, 5) + "..." + addr.slice(-5);
+		const profileDiv = document.createElement("div");
+		profileDiv.className = "profile";
+
+		const avatar = this.ensData?.avatar_small;
+		const displayName = this.getDisplayName();
+
+		let avatarElement = "";
+		if (avatar) {
+			avatarElement = `<img src="${avatar}" alt="Avatar" class="avatar" onerror="this.style.display='none'">`;
+		} else {
+			avatarElement = `<div class="avatar-placeholder"></div>`;
+		}
+
+		profileDiv.innerHTML = `
+			${avatarElement}
+			<div class="profile-info">
+				<h3>${displayName}</h3>
+				<p>${this.balance} ETH</p>
+			</div>
+		`;
+
+		profileDiv.addEventListener("click", (e) => {
+			e.stopPropagation();
+			this.togglePopover();
+		});
+
+		profileContainer.appendChild(profileDiv);
+		this.shadowRoot.appendChild(profileContainer);
+
+		if (this.showPopover) {
+			this.showPopoverElement();
+		}
 	}
 
 	renderLoading() {
