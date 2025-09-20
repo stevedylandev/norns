@@ -28,7 +28,7 @@ bun install
 bun dev
 ```
 
-This will run a simple server for `src/index.html` which imports components from `src/component/`
+This will run a simple server for `site/index.html` which imports components from `src/component/`
 
 3. Build
 
@@ -46,7 +46,6 @@ Still figuring this out, suggestions and examples welcome!
 **Components**
 
 - [ ] Connect Wallet
-  - Add variant modes (avatar, no avatar, ens, etc)
 - [ ] Interact with Contract
 - [ ] TX Toasts?
 - [ ] Contract State and Functions
