@@ -344,6 +344,7 @@ class ConnectWallet extends HTMLElement {
 				.profile-container {
 					position: relative;
 					display: inline-block;
+					font-family: sans-serif;
 				}
 
 				.profile {
@@ -353,7 +354,6 @@ class ConnectWallet extends HTMLElement {
 					padding: 10px 20px;
 					background: var(--bg-color);
 					border-radius: var(--border-radius);
-					border: 1px solid rgba(255, 255, 255, 0.1);
 					color: var(--color-foreground);
 					min-width: auto;
 					transition: background-color 0.3s ease;
@@ -405,16 +405,15 @@ class ConnectWallet extends HTMLElement {
 				}
 
 				.avatar {
-					width: 24px;
-					height: 24px;
+					width: 32px;
+					height: 32px;
 					border-radius: 50%;
 					object-fit: cover;
-					border: 1px solid rgba(255, 255, 255, 0.2);
 				}
 
 				.avatar-placeholder {
-					width: 24px;
-					height: 24px;
+					width: 32px;
+					height: 32px;
 					border-radius: 50%;
 					background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
 					display: flex;
@@ -430,9 +429,9 @@ class ConnectWallet extends HTMLElement {
 					min-width: 0;
 				}
 
-				.profile-info h3 {
+				.profile-info h4 {
 					margin: 0 0 2px 0;
-					font-size: 16px;
+					font-size: 14px;
 					font-weight: 600;
 					white-space: nowrap;
 					overflow: hidden;
@@ -441,7 +440,7 @@ class ConnectWallet extends HTMLElement {
 
 				.profile-info p {
 					margin: 0;
-					font-size: 14px;
+					font-size: 12px;
 					opacity: 0.8;
 					white-space: nowrap;
 					overflow: hidden;
@@ -499,7 +498,7 @@ class ConnectWallet extends HTMLElement {
 		profileDiv.innerHTML = `
 			${avatarElement}
 			<div class="profile-info">
-				<h3>${displayName}</h3>
+				<h4>${displayName}</h4>
 				<p>${this.balance} ETH</p>
 			</div>
 		`;
