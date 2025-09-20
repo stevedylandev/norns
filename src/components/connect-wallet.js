@@ -15,7 +15,14 @@ class ConnectWallet extends HTMLElement {
 	}
 
 	static get observedAttributes() {
-		return ["chain-id"];
+		return [
+			"chain-id",
+			"background",
+			"foreground",
+			"primary",
+			"secondary",
+			"border-radius",
+		];
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
@@ -24,6 +31,17 @@ class ConnectWallet extends HTMLElement {
 			if (this.connected) {
 				this.checkAndSwitchChain();
 			}
+		} else if (
+			[
+				"background",
+				"foreground",
+				"primary",
+				"secondary",
+				"border-radius",
+			].includes(name) &&
+			oldValue !== newValue
+		) {
+			this.render();
 		}
 	}
 
@@ -277,22 +295,38 @@ class ConnectWallet extends HTMLElement {
 		}
 	}
 
+	// Color helper methods
+	getCSSVariable(name, defaultValue) {
+		return this.getAttribute(name) || defaultValue;
+	}
+
 	// Render methods and styling
 	render() {
+		const background = this.getCSSVariable("background", "#232323");
+		const foreground = this.getCSSVariable("foreground", "#ffffff");
+		const primary = this.getCSSVariable("primary", "#5F8787");
+		const secondary = this.getCSSVariable("secondary", "#6F9797");
+		const borderRadius = this.getCSSVariable("border-radius", "4px");
+
 		this.shadowRoot.innerHTML = `
 			<style>
 				:host {
-					--bg-color: ${this.connected ? "#232323" : "#5F8787"};
-					--bg-hover-color: ${this.connected ? "#262626" : "#6F9797"};
+					--color-background: ${background};
+					--color-foreground: ${foreground};
+					--color-primary: ${primary};
+					--color-secondary: ${secondary};
+					--border-radius: ${borderRadius};
+					--bg-color: ${this.connected ? "var(--color-background)" : "var(--color-primary)"};
+					--bg-hover-color: ${this.connected ? "var(--color-background)" : "var(--color-secondary)"};
 					display: inline-block;
 				}
 
 				button {
 					padding: 10px 20px;
 					background: var(--bg-color);
-					color: white;
+					color: var(--color-foreground);
 					border: none;
-					border-radius: 4px;
+					border-radius: var(--border-radius);
 					cursor: pointer;
 					font-size: 16px;
 					transition: background-color 0.3s ease;
@@ -318,9 +352,9 @@ class ConnectWallet extends HTMLElement {
 					gap: 8px;
 					padding: 10px 20px;
 					background: var(--bg-color);
-					border-radius: 4px;
+					border-radius: var(--border-radius);
 					border: 1px solid rgba(255, 255, 255, 0.1);
-					color: white;
+					color: var(--color-foreground);
 					min-width: auto;
 					transition: background-color 0.3s ease;
 					cursor: pointer;
@@ -337,7 +371,7 @@ class ConnectWallet extends HTMLElement {
 					right: 0;
 					background: var(--bg-color);
 					border: 1px solid rgba(255, 255, 255, 0.1);
-					border-radius: 4px;
+					border-radius: var(--border-radius);
 					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 					z-index: 1000;
 					margin-top: 4px;
@@ -352,7 +386,7 @@ class ConnectWallet extends HTMLElement {
 					padding: 10px 16px;
 					background: var(--bg-color);
 					border: none;
-					color: white;
+					color: var(--color-foreground);
 					font-size: 14px;
 					cursor: pointer;
 					transition: background-color 0.2s ease;
@@ -382,11 +416,11 @@ class ConnectWallet extends HTMLElement {
 					width: 24px;
 					height: 24px;
 					border-radius: 50%;
-					background: linear-gradient(45deg, #667eea, #764ba2);
+					background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					color: white;
+					color: var(--color-foreground);
 					font-weight: bold;
 					font-size: 12px;
 				}
@@ -424,7 +458,7 @@ class ConnectWallet extends HTMLElement {
 					width: 16px;
 					height: 16px;
 					border: 2px solid rgba(255, 255, 255, 0.3);
-					border-top: 2px solid white;
+					border-top: 2px solid var(--color-foreground);
 					border-radius: 50%;
 					animation: spin 1s linear infinite;
 				}
