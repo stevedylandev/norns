@@ -384,13 +384,15 @@ class ConnectWallet extends HTMLElement {
 	}
 
 	renderLoading() {
-		const loadingDiv = document.createElement("div");
-		loadingDiv.className = "profile loading";
-		loadingDiv.innerHTML = `
-			<div class="spinner"></div>
-			<span>Connecting...</span>
+		const button = document.createElement("button");
+		button.disabled = true;
+		button.innerHTML = `
+			<div class="loading">
+				<div class="spinner"></div>
+				<span>Connecting...</span>
+			</div>
 		`;
-		this.shadowRoot.appendChild(loadingDiv);
+		this.shadowRoot.appendChild(button);
 	}
 
 	renderConnectButton() {
