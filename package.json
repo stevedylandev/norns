@@ -22,7 +22,9 @@
 		"components"
 	],
 	"devDependencies": {
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"bun-plugin-tailwind": "^0.0.15",
+		"tailwindcss": "^4.1.13"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
