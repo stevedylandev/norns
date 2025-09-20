@@ -1,7 +1,5 @@
 import { $ } from "bun";
 
-// Clean up old dist
-await $`rm -rf site-dist`;
 // Create new dist
 await $`cp -r site site-dist`;
 // Compile tailwindcss
@@ -26,3 +24,6 @@ await Bun.write("site-dist/index.html", updatedHtml);
 
 // Run orbiter update
 await $`orbiter update -d norns site-dist`;
+
+// Clean up dist
+await $`rm -rf site-dist`;
