@@ -12,6 +12,7 @@
 	],
 	"scripts": {
 		"build": "bun build src/index.ts --outdir dist --target node && cp -r src/components dist/",
+		"deploy:site": "bun scripts/deploy-site.ts",
 		"dev": "bun site/index.html --console"
 	},
 	"keywords": [
