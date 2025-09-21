@@ -387,13 +387,12 @@ class ContractCall extends HTMLElement {
 	}
 
 	getStatusText() {
-		if (this.loading) return "Processing...";
 		if (this.error) return `Error: ${this.error}`;
 		if (this.result) {
 			if (this.isReadOnly) {
 				return `Result: ${JSON.stringify(this.result)}`;
 			} else {
-				return `Transaction: ${this.result.transactionHash}`;
+				return `tx: ${this.result.transactionHash}`;
 			}
 		}
 		return "";
@@ -441,34 +440,18 @@ class ContractCall extends HTMLElement {
 
 				.info-row {
 					display: flex;
-					justify-content: space-between;
-					align-items: center;
+					flex-direction: column;
 				}
 
 				.info-label {
 					font-weight: 600;
-					min-width: 80px;
 				}
 
 				.info-value {
 					font-family: monospace;
-					word-break: break-all;
-					text-align: right;
 					flex: 1;
-					margin-left: 12px;
-				}
-
-				.method-info {
-					background: rgba(255, 255, 255, 0.05);
-					border-radius: calc(var(--border-radius) / 2);
-					padding: 12px;
-				}
-
-				.method-signature {
-					font-family: monospace;
-					font-size: 13px;
-					color: var(--color-primary);
-					margin-bottom: 8px;
+					font-size: 12px;
+					text-align: start;
 				}
 
 				button {
@@ -479,7 +462,6 @@ class ContractCall extends HTMLElement {
 					border-radius: var(--border-radius);
 					cursor: pointer;
 					font-size: 16px;
-					font-weight: 600;
 					transition: background-color 0.3s ease;
 				}
 
@@ -493,13 +475,11 @@ class ContractCall extends HTMLElement {
 				}
 
 				.status {
-					padding: 12px;
 					border-radius: calc(var(--border-radius) / 2);
-					font-size: 14px;
+					font-size: 12px;
+					font-family: monospace;
 					word-break: break-all;
-					border: 1px solid;
 					border-color: ${this.getStatusColor()};
-					background: ${this.getStatusColor()}20;
 					color: ${this.getStatusColor()};
 				}
 
@@ -547,25 +527,6 @@ class ContractCall extends HTMLElement {
 					<span class="info-value">${this.contractAddress}</span>
 				</div>
 			`;
-		}
-
-		// Method info section
-		if (this.methodData) {
-			const methodInfo = document.createElement("div");
-			methodInfo.className = "method-info";
-
-			const inputs = this.methodData.inputs || [];
-			const inputTypes =
-				inputs.length > 0
-					? inputs.map((input) => `${input.type} ${input.name}`).join(", ")
-					: "";
-			const signature = `${this.methodName}(${inputTypes})`;
-
-			methodInfo.innerHTML = `
-				<div class="method-signature">${signature}</div>
-			`;
-
-			container.appendChild(methodInfo);
 		}
 
 		container.appendChild(contractInfo);
