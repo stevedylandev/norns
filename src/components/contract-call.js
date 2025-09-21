@@ -431,7 +431,32 @@ class ContractCall extends HTMLElement {
 					border: 1px solid rgba(255, 255, 255, 0.1);
 					border-radius: var(--border-radius);
 					color: var(--color-foreground);
-					width: 300px;
+					width: 320px;
+					box-sizing: border-box;
+				}
+
+				@media (max-width: 768px) {
+					.container {
+						width: 280px;
+						padding: 12px;
+						gap: 10px;
+					}
+				}
+
+				@media (max-width: 480px) {
+					.container {
+						width: 260px;
+						padding: 10px;
+						gap: 8px;
+					}
+				}
+
+				@media (max-width: 320px) {
+					.container {
+						width: 240px;
+						padding: 8px;
+						gap: 6px;
+					}
 				}
 
 				.contract-info {
@@ -456,6 +481,10 @@ class ContractCall extends HTMLElement {
 					flex: 1;
 					font-size: 12px;
 					text-align: start;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					max-width: 100%;
 				}
 
 				button {
