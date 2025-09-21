@@ -49,6 +49,7 @@ Still figuring this out, suggestions and examples welcome!
 - [x] Contract Call
 - [ ] TX Toasts?
 - [ ] Contract State and Functions
+- [ ] Framework compatability (React, Svelte, etc)
 
 ## Contributing
 
