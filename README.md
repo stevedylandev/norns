@@ -1,6 +1,6 @@
 # Norns
 
-![cover](src/og.png)
+![cover](site/og.png)
 
 Interoperable web components for decentralized applications
 
