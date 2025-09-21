@@ -1,6 +1,6 @@
 {
 	"name": "norns-ui",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"description": "Interoperable web components for decentralized applications",
 	"main": "dist/index.js",
 	"bin": {
