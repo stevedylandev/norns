@@ -9,6 +9,8 @@ import { createInterface } from "node:readline/promises";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import * as colors from "./utils/colors.js";
+import yoctoSpinner from "./utils/spinner.js";
 
 const __filename = fileURLToPath(import.meta.url);
 
@@ -32,16 +34,19 @@ async function loadConfig(): Promise<NornsConfig | null> {
 		const configContent = await readFile(CONFIG_FILE, "utf8");
 		return JSON.parse(configContent);
 	} catch (error) {
-		console.error(`✗ Failed to load ${CONFIG_FILE}:`, error);
+		console.error(colors.red(`✗ Failed to load ${CONFIG_FILE}:`), error);
 		return null;
 	}
 }
 
 async function saveConfig(config: NornsConfig): Promise<void> {
+	const spinner = yoctoSpinner({ text: `Saving ${CONFIG_FILE}` }).start();
 	try {
 		await writeFile(CONFIG_FILE, JSON.stringify(config, null, 2), "utf8");
+		spinner.success(`Saved ${CONFIG_FILE}`);
 	} catch (error) {
-		console.error(`✗ Failed to save ${CONFIG_FILE}:`, error);
+		spinner.error(`Failed to save ${CONFIG_FILE}`);
+		console.error(error);
 		throw error;
 	}
 }
@@ -68,22 +73,22 @@ async function promptUser(
 }
 
 async function init() {
-	console.log("⚡ Initializing norns project...");
+	console.log(colors.yellow("∅ Initializing norns project..."));
 
 	// Check if components.json already exists
 	if (existsSync(CONFIG_FILE)) {
-		console.log(`▸ ${CONFIG_FILE} already exists`);
+		console.log(colors.blue(`▸ ${CONFIG_FILE} already exists`));
 		const overwrite = await promptUser(
 			"Would you like to overwrite it? (y/N)",
 			"n",
 		);
 		if (overwrite.toLowerCase() !== "y" && overwrite.toLowerCase() !== "yes") {
-			console.log("✗ Initialization cancelled");
+			console.log(colors.red("✗ Initialization cancelled"));
 			return;
 		}
 	}
 
-	console.log("\n▸ Setting up your components configuration...\n");
+	console.log(colors.blue("\n▸ Setting up your components configuration...\n"));
 
 	// Get component directory path
 	const componentsPath = await promptUser(
@@ -98,36 +103,42 @@ async function init() {
 
 	// Create components directory if it doesn't exist
 	if (!existsSync(componentsPath)) {
+		const dirSpinner = yoctoSpinner({
+			text: `Creating ${componentsPath} directory`,
+		}).start();
 		await mkdir(componentsPath, { recursive: true });
-		console.log(`✓ Created ${componentsPath} directory`);
+		dirSpinner.success(`Created ${componentsPath} directory`);
 	}
 
 	// Save the configuration
 	await saveConfig(config);
-	console.log(`✓ Created ${CONFIG_FILE}`);
 
 	console.log(
-		"\n✓ norns project initialized! You can now add components with:",
+		colors.green(
+			"\n✓ norns project initialized! You can now add components with:",
+		),
 	);
-	console.log("  npx norns@latest add <component-name>");
-	console.log(`\n▸ Components will be installed to: ${componentsPath}`);
+	console.log(colors.cyan("  npx norns@latest add <component-name>"));
+	console.log(
+		colors.blue(`\n▸ Components will be installed to: ${componentsPath}`),
+	);
 }
 
 async function addComponent(componentName: string | undefined) {
 	if (!componentName) {
-		console.error("✗ Please specify a component name");
-		console.log("Usage: npx norns@latest add <component-name>");
+		console.error(colors.red("✗ Please specify a component name"));
+		console.log(colors.cyan("Usage: npx norns@latest add <component-name>"));
 		process.exit(1);
 	}
 
-	console.log(`▸ Adding component: ${componentName}`);
+	console.log(colors.blue(`▸ Adding component: ${componentName}`));
 
 	// Load configuration
 	let config = await loadConfig();
 
 	// If no config exists, ask user to run init first or use defaults
 	if (!config) {
-		console.log("▸ No norns.json found.");
+		console.log(colors.blue("▸ No norns.json found."));
 		const shouldInit = await promptUser(
 			"Would you like to run 'norns init' first? (Y/n)",
 			"y",
@@ -141,13 +152,13 @@ async function addComponent(componentName: string | undefined) {
 			await init();
 			config = await loadConfig();
 		} else {
-			console.log("▸ Using default configuration...");
+			console.log(colors.blue("▸ Using default configuration..."));
 			config = DEFAULT_CONFIG;
 		}
 	}
 
 	if (!config) {
-		console.error("✗ Failed to initialize configuration");
+		console.error(colors.red("✗ Failed to initialize configuration"));
 		process.exit(1);
 	}
 
@@ -155,64 +166,134 @@ async function addComponent(componentName: string | undefined) {
 
 	// Create components directory if it doesn't exist
 	if (!existsSync(componentsDir)) {
-		console.log(
-			`▸ Components directory doesn't exist. Creating ${componentsDir}...`,
-		);
+		const dirSpinner = yoctoSpinner({
+			text: `Creating ${componentsDir} directory`,
+		}).start();
 		await mkdir(componentsDir, { recursive: true });
+		dirSpinner.success(`Created ${componentsDir} directory`);
 	}
 
 	try {
 		const sourceComponentPath = join(COMPONENTS_DIR, `${componentName}.js`);
 
 		if (!existsSync(sourceComponentPath)) {
-			console.error(`✗ Component '${componentName}' not found`);
-			console.log("Available components:");
-			console.log("  - connect-wallet");
-			console.log("  - contract-call");
+			console.error(colors.red(`✗ Component '${componentName}' not found`));
+			console.log(colors.blue("Available components:"));
+			console.log(colors.cyan("  - connect-wallet"));
+			console.log(colors.cyan("  - contract-call"));
 			process.exit(1);
 		}
+
+		const installSpinner = yoctoSpinner({
+			text: `Installing ${componentName} component`,
+		}).start();
 
 		const componentCode = await readFile(sourceComponentPath, "utf8");
 		const componentPath = join(componentsDir, `${componentName}.js`);
 
 		await writeFile(componentPath, componentCode, "utf8");
 
-		console.log(`✓ Added ${componentName} to ${componentPath}`);
-		console.log(`▸ You can now use it in your HTML:`);
-		console.log(`   <script src="components/${componentName}.js"></script>`);
-		console.log(`   <${componentName}></${componentName}>`);
+		installSpinner.success(`Added ${componentName} to ${componentPath}`);
+		console.log(colors.blue(`▸ You can now use it in your HTML:`));
+		console.log(
+			colors.cyan(`   <script src="components/${componentName}.js"></script>`),
+		);
+		console.log(colors.cyan(`   <${componentName}></${componentName}>`));
 	} catch (error) {
-		console.error(`✗ Failed to add component: ${error}`);
+		console.error(colors.red(`✗ Failed to add component: ${error}`));
 		process.exit(1);
 	}
 }
 
 function showHelp() {
-	console.log(`
-⚡ norns - Web Component Library CLI
+	console.log(
+		colors.yellow(`
 
-Usage:
-  npx norns@latest init                    Initialize a new norns project with norns.json
-  npx norns@latest add <component-name>    Add a component to your project
-  npx norns@latest --help                  Show this help message
+                                 @
+                                @@@@
+                                  @@@@    @@@@@@@@@
+                                    @@@@  @@@   @@@@@@
+                                      @@@@         @@@@
+                                    @@  @@@@        @@@@
+                                  @@@@    @@@@       @@@
+                   @@@@@@@      @@@@        @@@@    @@@
+                 @@@@@@@@@@@  @@@@            @@@  @@@@
+               @@@@         @@@@                 @@@@
+              @@@         @@@@  @              @@@@  @
+              @@@       @@@@   @@@@          @@@@   @@@@          @@@
+              @@@     @@@@       @@@@      @@@@       @@@@      @@@@
+               @@@  @@@@           @@@@  @@@@           @@@@  @@@@
+                @@@@                 @@@@                 @@@@
+                  @@@@                 @@@@                 @@@@
+              @@@@  @@@@           @@@@  @@@@           @@@@  @@@
+            @@@@      @@@@       @@@@      @@@@       @@@@     @@@
+           @@@          @@@@   @@@@          @@@@   @@@@       @@@
+                          @  @@@@              @  @@@@         @@@
+                           @@@@                 @@@@         @@@@
+                         @@@@  @@@            @@@@  @@@@@@@@@@@
+                         @@@    @@@@        @@@@      @@@@@@
+                        @@@       @@@@    @@@@
+                        @@@@        @@@@  @@
+                         @@@@         @@@@
+                           @@@@@   @@@  @@@@
+                             @@@@@@@@@    @@@@
+                                            @@@@
+                                              @
+`),
+	);
+	console.log(
+		colors.yellow(`\n∅ norns - web components for decentralized applications`),
+		colors.cyan("\nhttps://github.com/stevedylandev/norns\n"),
+	);
+	console.log(colors.bold("Usage:"));
+	console.log(
+		colors.cyan(
+			"  npx norns@latest init                    Initialize a new norns project with norns.json",
+		),
+	);
+	console.log(
+		colors.cyan(
+			"  npx norns@latest add <component-name>    Add a component to your project",
+		),
+	);
+	console.log(
+		colors.cyan(
+			"  npx norns@latest --help                  Show this help message\n",
+		),
+	);
 
-Examples:
-  npx norns@latest init
-  npx norns@latest add connect-wallet
+	console.log(colors.bold("Examples:"));
+	console.log(colors.green("  npx norns@latest init"));
+	console.log(colors.green("  npx norns@latest add connect-wallet\n"));
 
-The init command will:
-  - Create a norns.json configuration file
-  - Set up your preferred component installation directory
-  - Create necessary directories
+	console.log(colors.bold("The init command will:"));
+	console.log(colors.blue("  - Create a norns.json configuration file"));
+	console.log(
+		colors.blue("  - Set up your preferred component installation directory"),
+	);
+	console.log(colors.blue("  - Create necessary directories\n"));
 
-Available Components:
-  - connect-wallet    A Web3 wallet connection component
-  - contract-call     A Web3 contract interaction component
+	console.log(colors.bold("Available Components:"));
+	console.log(
+		colors.cyan("  - connect-wallet    A Web3 wallet connection component"),
+	);
+	console.log(
+		colors.cyan(
+			"  - contract-call     A Web3 contract interaction component\n",
+		),
+	);
 
-Configuration:
-  The norns.json file controls where components are installed.
-  You can customize the installation directory during init or edit the file directly.
-`);
+	console.log(colors.bold("Configuration:"));
+	console.log(
+		colors.blue(
+			"  The norns.json file controls where components are installed.",
+		),
+	);
+	console.log(
+		colors.blue(
+			"  You can customize the installation directory during init or edit the file directly.",
+		),
+	);
 }
 
 // Parse command line arguments using Node's parseArgs
@@ -247,7 +328,7 @@ if (values.help) {
 			if (!command) {
 				showHelp();
 			} else {
-				console.error(`✗ Unknown command: ${command}`);
+				console.error(colors.red(`✗ Unknown command: ${command}`));
 				showHelp();
 				process.exit(1);
 			}

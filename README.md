@@ -12,7 +12,7 @@ Web components are independant pieces of Javascript that can be imported to plai
 
 The goal of Norns is to provide the Ethereum ecosystem a set of simple yet powerful web components for building decentralized applications. The advantage we have today is that we've experienced good DX from modern frameworks, so we have the ability to build components that feel familiar to devs building UIs for smart contracts. We will start small but slowly grow the offering as we get a better feel for what devs need; check out the [Roadmap](#roadmap) for more information.
 
-## Developer Setup
+## Local Development Setup
 
 1. Clone and install dependencies with [Bun](https://bun.sh)
 
@@ -41,7 +41,7 @@ Still figuring this out, suggestions and examples welcome!
 **CLI**
 
 - [x] Implement `norns.json` initialization
-- [ ] Improve styles and UX of commands and help menus
+- [x] Improve styles and UX of commands and help menus
 
 **Components**
 
