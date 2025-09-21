@@ -1,84 +1,84 @@
-import { keccak_256 } from "@noble/hashes/sha3.js"
+import { keccak_256 } from "@noble/hashes/sha3.js";
 
 class ContractCall extends HTMLElement {
-  /**
-	* ContractCall Web Component
-	*
-	* A custom HTML element for interacting with Ethereum smart contracts.
-	* Supports both read-only (view/pure) and write operations through wallet integration.
-	*
-	* @example
-	* Basic usage with inline ABI:
-	* ```html
-	* <contract-call
-	*   contract-address="0x1234567890123456789012345678901234567890"
-	*   method-name="balanceOf"
-	*   method-args='["0xabcdef1234567890123456789012345678901234"]'
-	*   abi='[{"type":"function","name":"balanceOf","inputs":[{"type":"address","name":"owner"}],"outputs":[{"type":"uint256","name":""}],"stateMutability":"view"}]'>
-	* </contract-call>
-	* ```
-	*
-	* @example
-	* Using ABI from URL:
-	* ```html
-	* <contract-call
-	*   contract-address="0x1234567890123456789012345678901234567890"
-	*   method-name="transfer"
-	*   method-args='["0xrecipient123", "1000000000000000000"]'
-	*   abi-url="https://api.example.com/contract-abi.json"
-	*   button-text="Send Tokens">
-	* </contract-call>
-	* ```
-	*
-	* @example
-	* Custom styling:
-	* ```html
-	* <contract-call
-	*   contract-address="0x1234567890123456789012345678901234567890"
-	*   method-name="getName"
-	*   abi-url="/abi/token.json"
-	*   background="#1a1a1a"
-	*   foreground="#ffffff"
-	*   primary="#00ff88"
-	*   secondary="#00cc66"
-	*   border-radius="8px"
-	*   error-color="#ff4444"
-	*   success-color="#44ff44">
-	* </contract-call>
-	* ```
-	*
-	* Attributes:
-	* - contract-address (required): The Ethereum contract address
-	* - method-name (required): The contract method to call
-	* - method-args: JSON array of method arguments (default: [])
-	* - abi: JSON string of the contract ABI
-	* - abi-url: URL to fetch the contract ABI from
-	* - chain-id: Ethereum chain ID in hex format (default: "0x1" for mainnet)
-	* - button-text: Text displayed on the call button (default: "Call Contract")
-	* - background: Background color (default: "#232323")
-	* - foreground: Text color (default: "#ffffff")
-	* - primary: Primary button color (default: "#5F8787")
-	* - secondary: Secondary/hover color (default: "#6F9797")
-	* - border-radius: Border radius for UI elements (default: "4px")
-	* - error-color: Color for error messages (default: "#E78A53")
-	* - success-color: Color for success messages (default: "#5F8787")
-	*
-	* Events:
-	* - abi-loaded: Fired when ABI is successfully loaded from URL
-	* - abi-error: Fired when ABI loading fails
-	* - contract-call-success: Fired when contract call succeeds
-	* - contract-call-error: Fired when contract call fails
-	*
-	* Requirements:
-	* - MetaMask or compatible wallet extension
-	* - @noble/hashes library for keccak256 hashing
-	*
-	* Notes:
-	* - Read-only methods (view/pure) use eth_call
-	* - Write methods send transactions via eth_sendTransaction
-	* - Simplified ABI encoding/decoding (use ethers.js/web3.js for production)
-	* - Automatically switches to the specified chain if needed
-	*/
+	/**
+	 * ContractCall Web Component
+	 *
+	 * A custom HTML element for interacting with Ethereum smart contracts.
+	 * Supports both read-only (view/pure) and write operations through wallet integration.
+	 *
+	 * @example
+	 * Basic usage with inline ABI:
+	 * ```html
+	 * <contract-call
+	 *   contract-address="0x1234567890123456789012345678901234567890"
+	 *   method-name="balanceOf"
+	 *   method-args='["0xabcdef1234567890123456789012345678901234"]'
+	 *   abi='[{"type":"function","name":"balanceOf","inputs":[{"type":"address","name":"owner"}],"outputs":[{"type":"uint256","name":""}],"stateMutability":"view"}]'>
+	 * </contract-call>
+	 * ```
+	 *
+	 * @example
+	 * Using ABI from URL:
+	 * ```html
+	 * <contract-call
+	 *   contract-address="0x1234567890123456789012345678901234567890"
+	 *   method-name="transfer"
+	 *   method-args='["0xrecipient123", "1000000000000000000"]'
+	 *   abi-url="https://api.example.com/contract-abi.json"
+	 *   button-text="Send Tokens">
+	 * </contract-call>
+	 * ```
+	 *
+	 * @example
+	 * Custom styling:
+	 * ```html
+	 * <contract-call
+	 *   contract-address="0x1234567890123456789012345678901234567890"
+	 *   method-name="getName"
+	 *   abi-url="/abi/token.json"
+	 *   background="#1a1a1a"
+	 *   foreground="#ffffff"
+	 *   primary="#00ff88"
+	 *   secondary="#00cc66"
+	 *   border-radius="8px"
+	 *   error-color="#ff4444"
+	 *   success-color="#44ff44">
+	 * </contract-call>
+	 * ```
+	 *
+	 * Attributes:
+	 * - contract-address (required): The Ethereum contract address
+	 * - method-name (required): The contract method to call
+	 * - method-args: JSON array of method arguments (default: [])
+	 * - abi: JSON string of the contract ABI
+	 * - abi-url: URL to fetch the contract ABI from
+	 * - chain-id: Ethereum chain ID in hex format (default: "0x1" for mainnet)
+	 * - button-text: Text displayed on the call button (default: "Call Contract")
+	 * - background: Background color (default: "#232323")
+	 * - foreground: Text color (default: "#ffffff")
+	 * - primary: Primary button color (default: "#5F8787")
+	 * - secondary: Secondary/hover color (default: "#6F9797")
+	 * - border-radius: Border radius for UI elements (default: "4px")
+	 * - error-color: Color for error messages (default: "#E78A53")
+	 * - success-color: Color for success messages (default: "#5F8787")
+	 *
+	 * Events:
+	 * - abi-loaded: Fired when ABI is successfully loaded from URL
+	 * - abi-error: Fired when ABI loading fails
+	 * - contract-call-success: Fired when contract call succeeds
+	 * - contract-call-error: Fired when contract call fails
+	 *
+	 * Requirements:
+	 * - MetaMask or compatible wallet extension
+	 * - @noble/hashes library for keccak256 hashing
+	 *
+	 * Notes:
+	 * - Read-only methods (view/pure) use eth_call
+	 * - Write methods send transactions via eth_sendTransaction
+	 * - Simplified ABI encoding/decoding (use ethers.js/web3.js for production)
+	 * - Automatically switches to the specified chain if needed
+	 */
 
 	// Constructor and lifecycle methods
 	constructor() {
@@ -330,8 +330,6 @@ class ContractCall extends HTMLElement {
 							from: accounts[0],
 							to: this.contractAddress,
 							data: data,
-							gas: "0x30D40", // 200000 in hex - higher gas limit for contract calls
-							gasPrice: "0x4A817C800", // 20 gwei in hex
 						},
 					],
 				});
@@ -455,7 +453,9 @@ class ContractCall extends HTMLElement {
 	keccak256(input) {
 		const inputBytes = new TextEncoder().encode(input);
 		const hashBytes = keccak_256(inputBytes);
-		return Array.from(hashBytes).map(b => b.toString(16).padStart(2, '0')).join('');
+		return Array.from(hashBytes)
+			.map((b) => b.toString(16).padStart(2, "0"))
+			.join("");
 	}
 
 	// UI helper methods
