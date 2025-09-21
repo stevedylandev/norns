@@ -40,13 +40,13 @@ Still figuring this out, suggestions and examples welcome!
 
 **CLI**
 
-- [ ] Implement `components.json` initialization
+- [x] Implement `norns.json` initialization
 - [ ] Improve styles and UX of commands and help menus
 
 **Components**
 
 - [x] Connect Wallet
-- [ ] Interact with Contract
+- [x] Contract Call
 - [ ] TX Toasts?
 - [ ] Contract State and Functions
 
