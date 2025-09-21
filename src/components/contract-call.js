@@ -367,16 +367,13 @@ class ContractCall extends HTMLElement {
 		return result;
 	}
 
-	keccak256 = (input) => {
-		// Use the global keccak256 function from the sha3 library
+	keccak256(input) {
 		if (typeof window.keccak256 === "function") {
 			return window.keccak256(input);
 		} else {
-			throw new Error(
-				"keccak256 function not available. Make sure the sha3 library is loaded.",
-			);
+			throw new Error("keccak256 function not available");
 		}
-	};
+	}
 
 	// UI helper methods
 	getCSSVariable(name, defaultValue) {
@@ -605,6 +602,18 @@ class ContractCall extends HTMLElement {
 }
 
 customElements.define("contract-call", ContractCall);
+
+/**
+ * ============================================================================
+ * KECCAK256 DEPENDENCY - DO NOT EDIT BELOW THIS LINE
+ * ============================================================================
+ *
+ * The following code is a third-party implementation of the Keccak/SHA-3
+ * cryptographic hash functions. This code should not be modified as it
+ * provides the necessary keccak256 functionality for the ContractCall component.
+ *
+ * ============================================================================
+ */
 
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -1401,6 +1410,13 @@ customElements.define("contract-call", ContractCall);
 			define(function () {
 				return methods;
 			});
+		}
+	}
+
+	// Ensure functions are always available globally in browser
+	if (typeof window !== "undefined") {
+		for (let i = 0; i < methodNames.length; ++i) {
+			window[methodNames[i]] = methods[methodNames[i]];
 		}
 	}
 })();
