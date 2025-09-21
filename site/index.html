@@ -38,19 +38,38 @@
       stevedylandev/norns
     </a>
   </div>
-  <div class="flex flex-col items-start gap-4">
-    <div class="border border-white rounded-md sm:w-[400px] sm:h-[400px] h-[300px] w-[300px] flex items-center justify-center">
-      <connect-wallet
-        chain-id="0xaa36a7"
-      ></connect-wallet>
+  <div class="flex flex-col items-start gap-8">
+    <div class="flex flex-col items-start gap-4">
+      <div class="border border-white rounded-md sm:w-[400px] sm:h-[400px] h-[300px] w-[300px] flex items-center justify-center">
+        <connect-wallet
+          chain-id="0xaa36a7"
+        ></connect-wallet>
+      </div>
+      <div class="text-xl text-[#ccc]">connect-wallet</div>
+      <div class="bg-[#1e1e1e] border border-[#333] rounded-sm p-2 text-xs text-[#888] mt-2 text-center">
+        npx norns-ui@latest add connect-wallet
+      </div>
     </div>
-    <div class="text-xl text-[#ccc]">connect-wallet</div>
-    <div class="bg-[#1e1e1e] border border-[#333] rounded-sm p-2 text-xs text-[#888] mt-2 text-center">
-      npx norns-ui@latest add connect-wallet
+
+    <div class="flex flex-col items-start gap-4">
+      <div class="border border-white rounded-md sm:w-[400px] sm:h-[400px] h-[300px] w-[300px] p-4 flex items-center justify-center">
+        <contract-call
+          contract-address="0x8C9EC9c13812C7F9F26AB934d4bF36206240dDA8"
+          chain-id="0xaa36a7"
+          method-name="increment"
+          abi='[{"inputs":[],"name":"increment","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"number","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"newNumber","type":"uint256"}],"name":"setNumber","outputs":[],"stateMutability":"nonpayable","type":"function"}]'
+          button-text="Increment"
+        ></contract-call>
+      </div>
+      <div class="text-xl text-[#ccc]">contract-call</div>
+      <div class="bg-[#1e1e1e] border border-[#333] rounded-sm p-2 text-xs text-[#888] mt-2 text-center">
+        npx norns-ui@latest add contract-call
+      </div>
     </div>
   </div>
   </main>
 
   <script src="../src/components/connect-wallet.js"></script>
+  <script src="../src/components/contract-call.js"></script>
 </body>
 </html>

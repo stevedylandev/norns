@@ -51,6 +51,7 @@ async function addComponent(componentName: string | undefined) {
 			console.error(`❌ Component '${componentName}' not found`);
 			console.log("Available components:");
 			console.log("  - connect-wallet");
+			console.log("  - contract-call");
 			process.exit(1);
 		}
 
@@ -84,6 +85,7 @@ Examples:
 
 Available Components:
   - connect-wallet    A Web3 wallet connection component
+  - contract-call     A Web3 contract interaction component
 `);
 }
 

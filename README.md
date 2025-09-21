@@ -45,7 +45,7 @@ Still figuring this out, suggestions and examples welcome!
 
 **Components**
 
-- [ ] Connect Wallet
+- [x] Connect Wallet
 - [ ] Interact with Contract
 - [ ] TX Toasts?
 - [ ] Contract State and Functions
