@@ -431,7 +431,7 @@ class ContractCall extends HTMLElement {
 					border: 1px solid rgba(255, 255, 255, 0.1);
 					border-radius: var(--border-radius);
 					color: var(--color-foreground);
-					min-width: 300px;
+					width: 300px;
 				}
 
 				.contract-info {
@@ -485,6 +485,9 @@ class ContractCall extends HTMLElement {
 					word-break: break-all;
 					border-color: ${this.getStatusColor()};
 					color: ${this.getStatusColor()};
+					max-width: 300px;
+					overflow-wrap: break-word;
+					white-space: pre-wrap;
 				}
 
 				.loading {
