@@ -1,3 +1,42 @@
+/**
+ * @fileoverview ConnectWallet Web Component - A customizable wallet connection component
+ * that supports Ethereum wallet integration with ENS resolution, balance display, and
+ * multi-chain support.
+ *
+ */
+
+/**
+ * ConnectWallet - A Web Component for Ethereum wallet connection and management
+ *
+ * This component provides a complete wallet connection interface with the following features:
+ * - Connect/disconnect wallet functionality
+ * - ENS name resolution and avatar display
+ * - Balance fetching and display
+ * - Multi-chain support with automatic switching
+ * - Customizable styling through attributes
+ * - Popover interface for wallet management
+ *
+ * @class ConnectWallet
+ * @extends HTMLElement
+ *
+ * @example
+ * // Basic usage
+ * <connect-wallet></connect-wallet>
+ *
+ * @example
+ * // With custom styling and chain
+ * <connect-wallet
+ *   chain-id="0x89"
+ *   primary="#4F46E5"
+ *   background="#1F2937"
+ *   border-radius="8px">
+ * </connect-wallet>
+ *
+ * @fires ConnectWallet#wallet-connected - Fired when wallet is successfully connected
+ * @fires ConnectWallet#wallet-disconnected - Fired when wallet is disconnected
+ * @fires ConnectWallet#wallet-error - Fired when wallet connection fails
+ */
+
 class ConnectWallet extends HTMLElement {
 	// Constructor and lifecycle methods
 	constructor() {
