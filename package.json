@@ -13,7 +13,7 @@
 	"scripts": {
 		"build": "bun build src/index.ts --outdir dist --target node && bun run build:components",
 		"build:components": "bun scripts/build-components.ts",
-		"deploy:site": "bun scripts/deploy-site.ts",
+		"build:site": "bun scripts/build-site",
 		"dev": "bun site/index.html --console"
 	},
 	"keywords": [

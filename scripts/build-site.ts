@@ -1,11 +1,15 @@
 import { $ } from "bun";
 
+// Clean up dist
+await $`rm -rf site-dist`;
 // Create new dist
 await $`cp -r site site-dist`;
 // Compile tailwindcss
 await $`bunx @tailwindcss/cli -i ./site/input.css -o ./site-dist/output.css `;
+// Build components
+await $`bun run build`;
 // Copy components over
-await $`cp -r src/components site-dist/components`;
+await $`cp -r dist/components site-dist/components`;
 
 // Read index file
 const htmlContent = await Bun.file("site-dist/index.html").text();
@@ -25,9 +29,3 @@ const updatedHtml = htmlContent
 	);
 // Write file
 await Bun.write("site-dist/index.html", updatedHtml);
-
-// Run orbiter update
-await $`orbiter update -d norns site-dist`;
-
-// Clean up dist
-await $`rm -rf site-dist`;
