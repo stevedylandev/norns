@@ -31,6 +31,8 @@ class ContractCall extends HTMLElement {
 			"primary",
 			"secondary",
 			"border-radius",
+			"error-color",
+			"success-color",
 		];
 	}
 
@@ -82,6 +84,8 @@ class ContractCall extends HTMLElement {
 						"primary",
 						"secondary",
 						"border-radius",
+						"error-color",
+						"success-color",
 					].includes(name)
 				) {
 					this.render();
@@ -381,8 +385,8 @@ class ContractCall extends HTMLElement {
 	}
 
 	getStatusColor() {
-		if (this.error) return "#ef4444";
-		if (this.result) return "#22c55e";
+		if (this.error) return this.getCSSVariable("error-color", "#E78A53");
+		if (this.result) return this.getCSSVariable("success-color", "#5F8787");
 		return this.getCSSVariable("primary", "#5F8787");
 	}
 
@@ -504,11 +508,11 @@ class ContractCall extends HTMLElement {
 				}
 
 				.error {
-					color: #ef4444;
+					color: ${this.getCSSVariable("error-color", "#E78A53")};
 				}
 
 				.success {
-					color: #22c55e;
+					color: ${this.getCSSVariable("success-color", "#5F8787")};
 				}
 			</style>
 		`;
