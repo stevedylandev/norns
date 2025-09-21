@@ -16,6 +16,10 @@ const updatedHtml = htmlContent
 		`<script src="components/connect-wallet.js"></script>`,
 	)
 	.replace(
+		`<script src="../src/components/contract-call.js"></script>`,
+		`<script src="components/contract-call.js"></script>`,
+	)
+	.replace(
 		`<link rel="stylesheet" href="tailwindcss" />`,
 		`<link rel="stylesheet" href="output.css" />`,
 	);
