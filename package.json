@@ -10,9 +10,11 @@
 	"files": [
 		"dist"
 	],
+	"types": "dist/custom-elements-jsx.d.ts",
 	"scripts": {
-		"build": "bun build src/index.ts --outdir dist --target node && bun run build:components",
+		"build": "bun build src/index.ts --outdir dist --target node && bun run build:components && bun run build:types",
 		"build:components": "bun scripts/build-components.ts",
+		"build:types": "bun scripts/build-types.ts",
 		"build:site": "bun scripts/build-site",
 		"dev": "bun site/index.html --console"
 	},
