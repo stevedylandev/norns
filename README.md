@@ -42,14 +42,21 @@ Still figuring this out, suggestions and examples welcome!
 
 - [x] Implement `norns.json` initialization
 - [x] Improve styles and UX of commands and help menus
+- [ ] Include utility files like types in initialization and `norns.json`
 
 **Components**
 
 - [x] Connect Wallet
 - [x] Contract Call
 - [ ] TX Toasts?
-- [ ] Contract State and Functions
-- [ ] Framework compatability (React, Svelte, etc)
+- [ ] Contract State (similar to contract call but auto loads the state)
+- [ ] Framework compatability
+  - [x] React
+  - [ ] Svelte
+  - [ ] Vue
+- [ ] General types through JSDoc?
+- [ ] Add tailwindcss class/className prop
+- [ ] Styles override if shadcn present?
 
 ## Contributing
 
