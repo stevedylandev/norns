@@ -20,10 +20,12 @@ const CONFIG_FILE = "norns.json";
 
 interface NornsConfig {
 	components: string;
+	includeTypes?: boolean;
 }
 
 const DEFAULT_CONFIG: NornsConfig = {
 	components: "components",
+	includeTypes: true,
 };
 
 async function loadConfig(): Promise<NornsConfig | null> {
@@ -96,9 +98,19 @@ async function init() {
 		DEFAULT_CONFIG.components,
 	);
 
+	// Get TypeScript types preference
+	const includeTypesResponse = await promptUser(
+		"Include TypeScript definitions for React JSX? (Y/n)",
+		"y",
+	);
+	const includeTypes =
+		includeTypesResponse.toLowerCase() !== "n" &&
+		includeTypesResponse.toLowerCase() !== "no";
+
 	// Create the configuration
 	const config: NornsConfig = {
 		components: componentsPath,
+		includeTypes,
 	};
 
 	// Create components directory if it doesn't exist
@@ -192,6 +204,23 @@ async function addComponent(componentName: string | undefined) {
 		const componentPath = join(componentsDir, `${componentName}.js`);
 
 		await writeFile(componentPath, componentCode, "utf8");
+
+		// Copy TypeScript definitions if enabled
+		if (config.includeTypes !== false) {
+			const typesSourcePath = join(
+				COMPONENTS_DIR,
+				"../custom-elements-jsx.d.ts",
+			);
+			const typesDestPath = "custom-elements-jsx.d.ts"; // Install at project root
+
+			if (existsSync(typesSourcePath)) {
+				const typesContent = await readFile(typesSourcePath, "utf8");
+				await writeFile(typesDestPath, typesContent, "utf8");
+				console.log(
+					colors.blue(`▸ Added TypeScript definitions to ${typesDestPath}`),
+				);
+			}
+		}
 
 		installSpinner.success(`Added ${componentName} to ${componentPath}`);
 		console.log(colors.blue(`▸ You can now use it in your HTML:`));

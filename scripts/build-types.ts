@@ -105,7 +105,7 @@ declare module 'react' {
 ${intrinsicElements}
     }
   }
-  
+
   interface CSSProperties {
     // Norns UI CSS Custom Properties
 ${cssProperties}

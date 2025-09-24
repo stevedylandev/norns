@@ -1,0 +1,4 @@
+{
+  "components": "src/components",
+  "includeTypes": true
+}
