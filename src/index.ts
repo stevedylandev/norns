@@ -211,7 +211,7 @@ async function addComponent(componentName: string | undefined) {
 				COMPONENTS_DIR,
 				"../custom-elements-jsx.d.ts",
 			);
-			const typesDestPath = "custom-elements-jsx.d.ts"; // Install at project root
+			const typesDestPath = join(componentsDir, "custom-elements-jsx.d.ts");
 
 			if (existsSync(typesSourcePath)) {
 				const typesContent = await readFile(typesSourcePath, "utf8");
