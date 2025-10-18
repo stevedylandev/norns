@@ -1,9 +1,30 @@
+import { useEffect, useRef } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import "./components/connect-wallet";
 
 function App() {
+	const walletRef = useRef<any>(null);
+
+	// Example of using callbacks
+	useEffect(() => {
+		const walletElement = walletRef.current;
+		if (!walletElement) return;
+
+		walletElement.onWalletConnected = (detail: any) => {
+			console.log("connected via callback: ", detail);
+		};
+
+		walletElement.onWalletDisconnected = () => {
+			console.log("disconnected via callback");
+		};
+
+		walletElement.onWalletError = (detail: any) => {
+			console.log("error via callback: ", detail);
+		};
+	}, []);
+
 	return (
 		<>
 			<div>
@@ -16,7 +37,7 @@ function App() {
 			</div>
 			<h1>Vite + React</h1>
 			<div className="card">
-				<connect-wallet></connect-wallet>
+				<connect-wallet ref={walletRef}></connect-wallet>
 			</div>
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more

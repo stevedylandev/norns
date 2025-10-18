@@ -51,6 +51,11 @@ class ConnectWallet extends HTMLElement {
 		this.showPopover = false;
 		this.balance = "0";
 		this.copySuccess = false;
+
+		// React-friendly callback properties
+		this.onWalletConnected = null;
+		this.onWalletDisconnected = null;
+		this.onWalletError = null;
 	}
 
 	static get observedAttributes() {
@@ -117,25 +122,41 @@ class ConnectWallet extends HTMLElement {
 				this.loading = false;
 				this.render();
 
+				const eventDetail = {
+					address: this.address,
+					ensData: this.ensData,
+					chainId: this.currentChainId,
+				};
+
+				// Dispatch custom event for vanilla JS and other frameworks
 				this.dispatchEvent(
 					new CustomEvent("wallet-connected", {
-						detail: {
-							address: this.address,
-							ensData: this.ensData,
-							chainId: this.currentChainId,
-						},
+						detail: eventDetail,
 					}),
 				);
+
+				// Call callback property if set (React-friendly)
+				if (typeof this.onWalletConnected === "function") {
+					this.onWalletConnected(eventDetail);
+				}
 			} catch (error) {
 				console.error("Connection failed", error);
 				this.loading = false;
 				this.render();
 
+				const errorDetail = { error: error.message };
+
+				// Dispatch custom event for vanilla JS and other frameworks
 				this.dispatchEvent(
 					new CustomEvent("wallet-error", {
-						detail: { error: error.message },
+						detail: errorDetail,
 					}),
 				);
+
+				// Call callback property if set (React-friendly)
+				if (typeof this.onWalletError === "function") {
+					this.onWalletError(errorDetail);
+				}
 			}
 		} else {
 			alert("Please install a wallet extension like MetaMask");
@@ -152,7 +173,13 @@ class ConnectWallet extends HTMLElement {
 		this.copySuccess = false;
 		this.render();
 
+		// Dispatch custom event for vanilla JS and other frameworks
 		this.dispatchEvent(new CustomEvent("wallet-disconnected"));
+
+		// Call callback property if set (React-friendly)
+		if (typeof this.onWalletDisconnected === "function") {
+			this.onWalletDisconnected();
+		}
 	}
 
 	// Chain management methods
