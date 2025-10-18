@@ -4,7 +4,10 @@ import { readFile, writeFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 
 const COMPONENTS_DIR = "src/components";
-const OUTPUT_PATH = "dist/custom-elements-jsx.d.ts";
+const OUTPUT_DIR = "dist";
+const REACT_OUTPUT = "custom-elements-jsx.ts";
+const SVELTE_OUTPUT = "custom-elements-svelte.ts";
+const TYPESCRIPT_OUTPUT = "custom-elements.ts";
 
 interface ComponentInfo {
 	tagName: string;
@@ -69,7 +72,7 @@ async function parseComponent(filePath: string): Promise<ComponentInfo | null> {
 	};
 }
 
-function generateJSXTypes(components: ComponentInfo[]): string {
+function generateReactTypes(components: ComponentInfo[]): string {
 	const intrinsicElements = components
 		.map((comp) => {
 			const attributeProps = comp.attributes
@@ -122,9 +125,85 @@ ${cssProperties}
 `;
 }
 
+function generateSvelteTypes(components: ComponentInfo[]): string {
+	const svelteHTMLElements = components
+		.map((comp) => {
+			const attributeProps = comp.attributes
+				.map((attr) => `      '${attr}'?: string;`)
+				.join("\n");
+
+			const eventHandlers = comp.events
+				.map((event) => {
+					return `      'on:${event}'?: (event: CustomEvent) => void;`;
+				})
+				.join("\n");
+
+			const allProps = [attributeProps, eventHandlers]
+				.filter((p) => p)
+				.join("\n");
+
+			return `    '${comp.tagName}': {\n${allProps}\n    };`;
+		})
+		.join("\n");
+
+	return `declare module 'svelte/elements' {
+  export interface SvelteHTMLElements {
+${svelteHTMLElements}
+  }
+}
+
+export {};
+`;
+}
+
+function generateTypeScriptTypes(components: ComponentInfo[]): string {
+	const elementInterfaces = components
+		.map((comp) => {
+			const attributeProps = comp.attributes
+				.map((attr) => `  setAttribute('${attr}', value: string): void;`)
+				.join("\n");
+
+			const eventHandlers = comp.events
+				.map((event) => {
+					return `  addEventListener(type: '${event}', listener: (event: CustomEvent) => void): void;`;
+				})
+				.join("\n");
+
+			return `interface ${toPascalCase(comp.tagName)}Element extends HTMLElement {
+${attributeProps}
+${eventHandlers}
+}`;
+		})
+		.join("\n\n");
+
+	const htmlElementTagMap = components
+		.map((comp) => {
+			return `  '${comp.tagName}': ${toPascalCase(comp.tagName)}Element;`;
+		})
+		.join("\n");
+
+	return `${elementInterfaces}
+
+declare global {
+  interface HTMLElementTagNameMap {
+${htmlElementTagMap}
+  }
+}
+
+export {};
+`;
+}
+
+function toPascalCase(str: string): string {
+	return str
+		.split("-")
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join("");
+}
+
 async function main() {
 	try {
-		console.log("🔧 Building JSX types...");
+		console.log("🔧 Building type definitions...");
 
 		// Read component files
 		const files = await readdir(COMPONENTS_DIR);
@@ -142,14 +221,24 @@ async function main() {
 
 		console.log(`📦 Found ${components.length} custom elements`);
 
-		// Generate JSX intrinsic elements types
-		const jsxTypesCode = generateJSXTypes(components);
-		await writeFile(OUTPUT_PATH, jsxTypesCode);
-		console.log(`✅ Generated JSX types: ${OUTPUT_PATH}`);
+		// Generate React types
+		const reactTypesCode = generateReactTypes(components);
+		await writeFile(join(OUTPUT_DIR, REACT_OUTPUT), reactTypesCode);
+		console.log(`✅ Generated React types: ${REACT_OUTPUT}`);
 
-		console.log("🎉 JSX types generated successfully!");
+		// Generate Svelte types
+		const svelteTypesCode = generateSvelteTypes(components);
+		await writeFile(join(OUTPUT_DIR, SVELTE_OUTPUT), svelteTypesCode);
+		console.log(`✅ Generated Svelte types: ${SVELTE_OUTPUT}`);
+
+		// Generate TypeScript types
+		const tsTypesCode = generateTypeScriptTypes(components);
+		await writeFile(join(OUTPUT_DIR, TYPESCRIPT_OUTPUT), tsTypesCode);
+		console.log(`✅ Generated TypeScript types: ${TYPESCRIPT_OUTPUT}`);
+
+		console.log("🎉 Type definitions generated successfully!");
 	} catch (error) {
-		console.error("❌ Error generating JSX types:", error);
+		console.error("❌ Error generating type definitions:", error);
 		process.exit(1);
 	}
 }

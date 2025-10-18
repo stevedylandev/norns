@@ -21,11 +21,13 @@ const CONFIG_FILE = "norns.json";
 interface NornsConfig {
 	components: string;
 	includeTypes?: boolean;
+	framework?: "typescript" | "react" | "svelte";
 }
 
 const DEFAULT_CONFIG: NornsConfig = {
 	components: "src/components",
 	includeTypes: true,
+	framework: "typescript",
 };
 
 async function loadConfig(): Promise<NornsConfig | null> {
@@ -100,17 +102,46 @@ async function init() {
 
 	// Get TypeScript types preference
 	const includeTypesResponse = await promptUser(
-		"Include TypeScript definitions for React JSX? (Y/n)",
+		"Include TypeScript definitions? (Y/n)",
 		"y",
 	);
 	const includeTypes =
 		includeTypesResponse.toLowerCase() !== "n" &&
 		includeTypesResponse.toLowerCase() !== "no";
 
+	// Get framework selection
+	let framework: "typescript" | "react" | "svelte" = "typescript";
+	if (includeTypes) {
+		console.log(colors.blue("\n▸ Select your framework:"));
+		console.log(colors.cyan("  1. TypeScript (standard)"));
+		console.log(colors.cyan("  2. React"));
+		console.log(colors.cyan("  3. Svelte"));
+
+		const frameworkChoice = await promptUser("Enter your choice (1-3)", "1");
+
+		switch (frameworkChoice) {
+			case "1":
+				framework = "typescript";
+				break;
+			case "2":
+				framework = "react";
+				break;
+			case "3":
+				framework = "svelte";
+				break;
+			default:
+				console.log(
+					colors.yellow(`▸ Invalid choice, defaulting to TypeScript`),
+				);
+				framework = "typescript";
+		}
+	}
+
 	// Create the configuration
 	const config: NornsConfig = {
 		components: componentsPath,
 		includeTypes,
+		framework,
 	};
 
 	// Create components directory if it doesn't exist
@@ -207,17 +238,32 @@ async function addComponent(componentName: string | undefined) {
 
 		// Copy TypeScript definitions if enabled
 		if (config.includeTypes !== false) {
-			const typesSourcePath = join(
-				COMPONENTS_DIR,
-				"../custom-elements-jsx.d.ts",
-			);
-			const typesDestPath = join(componentsDir, "custom-elements-jsx.d.ts");
+			const framework = config.framework || "typescript";
+			let typesFileName: string;
+
+			switch (framework) {
+				case "react":
+					typesFileName = "custom-elements-jsx.ts";
+					break;
+				case "svelte":
+					typesFileName = "custom-elements-svelte.ts";
+					break;
+				case "typescript":
+				default:
+					typesFileName = "custom-elements.ts";
+					break;
+			}
+
+			const typesSourcePath = join(COMPONENTS_DIR, `../${typesFileName}`);
+			const typesDestPath = join(componentsDir, typesFileName);
 
 			if (existsSync(typesSourcePath)) {
 				const typesContent = await readFile(typesSourcePath, "utf8");
 				await writeFile(typesDestPath, typesContent, "utf8");
 				console.log(
-					colors.blue(`▸ Added TypeScript definitions to ${typesDestPath}`),
+					colors.blue(
+						`▸ Added ${framework} TypeScript definitions to ${typesDestPath}`,
+					),
 				);
 			}
 		}

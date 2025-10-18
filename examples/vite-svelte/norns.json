@@ -1,5 +1,5 @@
 {
   "components": "src/components",
   "includeTypes": true,
-  "framework": "react"
+  "framework": "svelte"
 }
