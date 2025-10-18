@@ -76,6 +76,85 @@ async function promptUser(
 	}
 }
 
+interface MenuItem {
+	value: string;
+	label: string;
+}
+
+async function selectFromMenu(
+	question: string,
+	items: MenuItem[],
+	defaultIndex = 0,
+): Promise<string> {
+	return new Promise((resolve) => {
+		let selectedIndex = defaultIndex;
+		let isFirstRender = true;
+
+		const renderMenu = () => {
+			// Clear previous menu (move cursor up and clear lines)
+			if (!isFirstRender) {
+				// Move cursor up by the number of lines we printed
+				// +2 for the blank line before question and the question itself
+				process.stdout.write(`\x1b[${items.length + 2}A`);
+				// Clear from cursor to end of screen
+				process.stdout.write("\x1b[0J");
+			}
+			isFirstRender = false;
+
+			// Use process.stdout.write for precise control
+			process.stdout.write(colors.blue(`\n${question}\n`));
+			items.forEach((item, index) => {
+				const prefix = index === selectedIndex ? colors.green("❯ ") : "  ";
+				const text =
+					index === selectedIndex ? colors.cyan(item.label) : item.label;
+				process.stdout.write(prefix + text + "\n");
+			});
+		};
+
+		const onKeyPress = (str: string, key: any) => {
+			if (key.name === "return" || key.name === "enter") {
+				cleanup();
+				resolve(items[selectedIndex].value);
+				return;
+			}
+
+			if (key.name === "up" || str === "k") {
+				selectedIndex =
+					selectedIndex > 0 ? selectedIndex - 1 : items.length - 1;
+				renderMenu();
+			} else if (key.name === "down" || str === "j") {
+				selectedIndex =
+					selectedIndex < items.length - 1 ? selectedIndex + 1 : 0;
+				renderMenu();
+			} else if (key.ctrl && key.name === "c") {
+				cleanup();
+				process.exit(0);
+			}
+		};
+
+		const cleanup = () => {
+			if (process.stdin.isTTY && process.stdin.setRawMode) {
+				process.stdin.setRawMode(false);
+			}
+			process.stdin.removeListener("keypress", onKeyPress);
+			process.stdin.pause();
+			console.log(); // Add newline after selection
+		};
+
+		// Enable keypress events
+		const readline = require("readline");
+		readline.emitKeypressEvents(process.stdin);
+
+		if (process.stdin.isTTY && process.stdin.setRawMode) {
+			process.stdin.setRawMode(true);
+		}
+
+		process.stdin.resume(); // Ensure stdin is resumed
+		process.stdin.on("keypress", onKeyPress);
+		renderMenu();
+	});
+}
+
 async function init() {
 	console.log(colors.yellow("∅ Initializing norns project..."));
 
@@ -112,33 +191,17 @@ async function init() {
 	// Get framework selection
 	let framework: "typescript" | "react" | "svelte" | "vue" = "typescript";
 	if (includeTypes) {
-		console.log(colors.blue("\n▸ Select your framework:"));
-		console.log(colors.cyan("  1. TypeScript (standard)"));
-		console.log(colors.cyan("  2. React"));
-		console.log(colors.cyan("  3. Svelte"));
-		console.log(colors.cyan("  4. Vue"));
-
-		const frameworkChoice = await promptUser("Enter your choice (1-4)", "1");
-
-		switch (frameworkChoice) {
-			case "1":
-				framework = "typescript";
-				break;
-			case "2":
-				framework = "react";
-				break;
-			case "3":
-				framework = "svelte";
-				break;
-			case "4":
-				framework = "vue";
-				break;
-			default:
-				console.log(
-					colors.yellow(`▸ Invalid choice, defaulting to TypeScript`),
-				);
-				framework = "typescript";
-		}
+		const frameworkChoice = await selectFromMenu(
+			"Select your framework (use arrow keys or j/k, press Enter to select):",
+			[
+				{ value: "typescript", label: "TypeScript (standard)" },
+				{ value: "react", label: "React" },
+				{ value: "svelte", label: "Svelte" },
+				{ value: "vue", label: "Vue" },
+			],
+			0,
+		);
+		framework = frameworkChoice as "typescript" | "react" | "svelte" | "vue";
 	}
 
 	// Create the configuration
@@ -393,26 +456,29 @@ const { values, positionals } = parseArgs({
 const command = positionals[0];
 const componentName = positionals[1];
 
-if (values.help) {
-	showHelp();
-} else {
-	switch (command) {
-		case "init":
-			await init();
-			break;
-		case "add":
-			await addComponent(componentName);
-			break;
-		case "help":
-			showHelp();
-			break;
-		default:
-			if (!command) {
+// Wrap in async IIFE to avoid top-level await warning
+(async () => {
+	if (values.help) {
+		showHelp();
+	} else {
+		switch (command) {
+			case "init":
+				await init();
+				break;
+			case "add":
+				await addComponent(componentName);
+				break;
+			case "help":
 				showHelp();
-			} else {
-				console.error(colors.red(`✗ Unknown command: ${command}`));
-				showHelp();
-				process.exit(1);
-			}
+				break;
+			default:
+				if (!command) {
+					showHelp();
+				} else {
+					console.error(colors.red(`✗ Unknown command: ${command}`));
+					showHelp();
+					process.exit(1);
+				}
+		}
 	}
-}
+})();
