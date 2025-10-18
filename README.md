@@ -16,7 +16,7 @@ The goal of Norns is to provide the Ethereum ecosystem a set of simple yet power
 
 ## Quickstart
 
-1. Initialize `norns` with your package manager of choice
+### 1. Initialize `norns` with your package manager of choice
 
 ```bash
 npx norns-ui@latest init
@@ -29,7 +29,7 @@ Provide the following information as prompted:
 
 This will create a `norns.json` file in the root of your project with your selections
 
-2. Add components
+### 2. Add components
 
 Using the `norns.json` the CLI will install them to the provided path in the config.
 
@@ -39,11 +39,11 @@ npx norns-ui@latest add contract-call
 npx norns-ui@latest add contract-read
 ```
 
-3. Use components
+### 3. Use components
 
 These web components should work in virtually any framework setup, whether you're in React, Vue, Svelte, or just plain HTML.
 
-### HTML/Vanilla JS
+**HTML/Vanilla JS**
 
 ```html
 <!DOCTYPE html>
@@ -62,7 +62,7 @@ These web components should work in virtually any framework setup, whether you'r
 </html>
 ```
 
-### React
+**React**
 
 ```tsx
 import { useEffect, useRef } from "react";
@@ -88,7 +88,7 @@ function App() {
 }
 ```
 
-### Vue
+**Vue**
 
 ```vue
 <script setup lang="ts">
@@ -102,7 +102,7 @@ import './components/connect-wallet'
 </template>
 ```
 
-### Svelte
+**Svelte**
 
 ```svelte
 <script lang="ts">
@@ -114,7 +114,7 @@ import "./components/connect-wallet";
 </main>
 ```
 
-### TypeScript
+**TypeScript**
 
 ```typescript
 import "./components/connect-wallet";
