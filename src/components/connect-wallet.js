@@ -403,29 +403,29 @@ class ConnectWallet extends HTMLElement {
 		this.shadowRoot.innerHTML = `
 			<style>
 				:host {
-					--color-background: ${background};
-					--color-foreground: ${foreground};
-					--color-primary: ${primary};
-					--color-secondary: ${secondary};
-					--border-radius: ${borderRadius};
-					--bg-color: ${this.connected ? "var(--color-background)" : "var(--color-primary)"};
-					--bg-hover-color: ${this.connected ? "var(--color-background)" : "var(--color-secondary)"};
+					--norns-color-background: ${background};
+					--norns-color-foreground: ${foreground};
+					--norns-color-primary: ${primary};
+					--norns-color-secondary: ${secondary};
+					--norns-border-radius: ${borderRadius};
+					--norns-bg-color: ${this.connected ? "var(--norns-color-background)" : "var(--norns-color-primary)"};
+					--norns-bg-hover-color: ${this.connected ? "var(--norns-color-background)" : "var(--norns-color-secondary)"};
 					display: inline-block;
 				}
 
 				button {
 					padding: 10px 20px;
-					background: var(--bg-color);
-					color: var(--color-foreground);
+					background: var(--norns-bg-color);
+					color: var(--norns-color-foreground);
 					border: none;
-					border-radius: var(--border-radius);
+					border-radius: var(--norns-border-radius);
 					cursor: pointer;
 					font-size: 16px;
 					transition: background-color 0.3s ease;
 				}
 
 				button:hover {
-					background: var(--bg-hover-color);
+					background: var(--norns-bg-hover-color);
 				}
 
 				button:disabled {
@@ -444,16 +444,16 @@ class ConnectWallet extends HTMLElement {
 					align-items: center;
 					gap: 8px;
 					padding: 10px 20px;
-					background: var(--bg-color);
-					border-radius: var(--border-radius);
-					color: var(--color-foreground);
+					background: var(--norns-bg-color);
+					border-radius: var(--norns-border-radius);
+					color: var(--norns-color-foreground);
 					min-width: auto;
 					transition: background-color 0.3s ease;
 					cursor: pointer;
 				}
 
 				.profile:hover {
-					background: var(--bg-hover-color);
+					background: var(--norns-bg-hover-color);
 				}
 
 				.popover {
@@ -461,9 +461,9 @@ class ConnectWallet extends HTMLElement {
 					top: 100%;
 					left: 0;
 					right: 0;
-					background: var(--bg-color);
+					background: var(--norns-bg-color);
 					border: 1px solid rgba(255, 255, 255, 0.1);
-					border-radius: var(--border-radius);
+					border-radius: var(--norns-border-radius);
 					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 					z-index: 1000;
 					margin-top: 4px;
@@ -476,16 +476,16 @@ class ConnectWallet extends HTMLElement {
 					gap: 8px;
 					width: 100%;
 					padding: 10px 16px;
-					background: var(--bg-color);
+					background: var(--norns-bg-color);
 					border: none;
-					color: var(--color-foreground);
+					color: var(--norns-color-foreground);
 					font-size: 14px;
 					cursor: pointer;
 					transition: background-color 0.2s ease;
 				}
 
 				.popover-button:hover {
-					background: var(--bg-hover-color);
+					background: var(--norns-bg-hover-color);
 				}
 
 				.popover-button:not(:last-child) {
@@ -507,11 +507,11 @@ class ConnectWallet extends HTMLElement {
 					width: 32px;
 					height: 32px;
 					border-radius: 50%;
-					background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+					background: linear-gradient(45deg, var(--norns-color-primary), var(--norns-color-secondary));
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					color: var(--color-foreground);
+					color: var(--norns-color-foreground);
 					font-weight: bold;
 					font-size: 12px;
 				}
@@ -550,7 +550,7 @@ class ConnectWallet extends HTMLElement {
 					width: 16px;
 					height: 16px;
 					border: 2px solid rgba(255, 255, 255, 0.3);
-					border-top: 2px solid var(--color-foreground);
+					border-top: 2px solid var(--norns-color-foreground);
 					border-radius: 50%;
 					animation: spin 1s linear infinite;
 				}

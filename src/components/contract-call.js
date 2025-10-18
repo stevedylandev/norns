@@ -518,11 +518,11 @@ class ContractCall extends HTMLElement {
 		this.shadowRoot.innerHTML = `
 			<style>
 				:host {
-					--color-background: ${background};
-					--color-foreground: ${foreground};
-					--color-primary: ${primary};
-					--color-secondary: ${secondary};
-					--border-radius: ${borderRadius};
+					--norns-color-background: ${background};
+					--norns-color-foreground: ${foreground};
+					--norns-color-primary: ${primary};
+					--norns-color-secondary: ${secondary};
+					--norns-border-radius: ${borderRadius};
 					display: inline-block;
 					font-family: sans-serif;
 				}
@@ -532,10 +532,10 @@ class ContractCall extends HTMLElement {
 					flex-direction: column;
 					gap: 12px;
 					padding: 16px;
-					background: var(--color-background);
+					background: var(--norns-color-background);
 					border: 1px solid rgba(255, 255, 255, 0.1);
-					border-radius: var(--border-radius);
-					color: var(--color-foreground);
+					border-radius: var(--norns-border-radius);
+					color: var(--norns-color-foreground);
 					width: 320px;
 					box-sizing: border-box;
 				}
@@ -594,17 +594,17 @@ class ContractCall extends HTMLElement {
 
 				button {
 					padding: 12px 20px;
-					background: var(--color-primary);
-					color: var(--color-foreground);
+					background: var(--norns-color-primary);
+					color: var(--norns-color-foreground);
 					border: none;
-					border-radius: var(--border-radius);
+					border-radius: var(--norns-border-radius);
 					cursor: pointer;
 					font-size: 16px;
 					transition: background-color 0.3s ease;
 				}
 
 				button:hover:not(:disabled) {
-					background: var(--color-secondary);
+					background: var(--norns-color-secondary);
 				}
 
 				button:disabled {
@@ -613,7 +613,7 @@ class ContractCall extends HTMLElement {
 				}
 
 				.status {
-					border-radius: calc(var(--border-radius) / 2);
+					border-radius: calc(var(--norns-border-radius) / 2);
 					font-size: 12px;
 					font-family: monospace;
 					word-break: break-all;
@@ -634,7 +634,7 @@ class ContractCall extends HTMLElement {
 					width: 16px;
 					height: 16px;
 					border: 2px solid rgba(255, 255, 255, 0.3);
-					border-top: 2px solid var(--color-foreground);
+					border-top: 2px solid var(--norns-color-foreground);
 					border-radius: 50%;
 					animation: spin 1s linear infinite;
 				}

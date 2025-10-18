@@ -516,10 +516,10 @@ class ContractRead extends HTMLElement {
 		this.shadowRoot.innerHTML = `
 			<style>
 				:host {
-					--color-background: ${background};
-					--color-foreground: ${foreground};
-					--color-primary: ${primary};
-					--border-radius: ${borderRadius};
+					--norns-color-background: ${background};
+					--norns-color-foreground: ${foreground};
+					--norns-color-primary: ${primary};
+					--norns-border-radius: ${borderRadius};
 					display: inline-block;
 					font-family: sans-serif;
 				}
@@ -529,10 +529,10 @@ class ContractRead extends HTMLElement {
 					flex-direction: column;
 					gap: 12px;
 					padding: 16px;
-					background: var(--color-background);
+					background: var(--norns-color-background);
 					border: 1px solid rgba(255, 255, 255, 0.1);
-					border-radius: var(--border-radius);
-					color: var(--color-foreground);
+					border-radius: var(--norns-border-radius);
+					color: var(--norns-color-foreground);
 					width: 300px;
 					box-sizing: border-box;
 				}
@@ -602,14 +602,14 @@ class ContractRead extends HTMLElement {
 					display: flex;
 					align-items: center;
 					gap: 8px;
-					color: var(--color-primary);
+					color: var(--norns-color-primary);
 				}
 
 				.spinner {
 					width: 16px;
 					height: 16px;
 					border: 2px solid rgba(255, 255, 255, 0.3);
-					border-top: 2px solid var(--color-foreground);
+					border-top: 2px solid var(--norns-color-foreground);
 					border-radius: 50%;
 					animation: spin 1s linear infinite;
 				}
@@ -636,7 +636,7 @@ class ContractRead extends HTMLElement {
 				.result-value {
 					font-family: monospace;
 					font-size: 14px;
-					color: var(--color-primary);
+					color: var(--norns-color-primary);
 				}
 			</style>
 		`;
