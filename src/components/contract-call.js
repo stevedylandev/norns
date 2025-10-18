@@ -125,7 +125,7 @@ class ContractCall extends HTMLElement {
 				this.contractAddress = newValue || "";
 				break;
 			case "chain-id":
-				this.chainId = newValue || "0x1";
+				this.chainId = this.normalizeChainId(newValue);
 				break;
 			case "method-name":
 				this.methodName = newValue || "";
@@ -176,7 +176,8 @@ class ContractCall extends HTMLElement {
 
 	connectedCallback() {
 		this.contractAddress = this.getAttribute("contract-address") || "";
-		this.chainId = this.getAttribute("chain-id") || "0x1";
+		const chainIdAttr = this.getAttribute("chain-id");
+		this.chainId = this.normalizeChainId(chainIdAttr);
 		this.methodName = this.getAttribute("method-name") || "";
 		this.buttonText = this.getAttribute("button-text") || "Call Contract";
 		this.abiUrl = this.getAttribute("abi-url") || "";
@@ -261,6 +262,31 @@ class ContractCall extends HTMLElement {
 			method.stateMutability === "view" || method.stateMutability === "pure";
 		this.error = null;
 		this.render();
+	}
+
+	/**
+	 * Converts a numeric chain ID to hex format
+	 * @param {string|number} chainId - Chain ID in numeric or hex format
+	 * @returns {string} Chain ID in hex format (e.g., "0x2105")
+	 */
+	normalizeChainId(chainId) {
+		if (!chainId) return "0x1";
+
+		const chainIdStr = String(chainId);
+
+		// If it's already in hex format (starts with 0x), return as-is
+		if (chainIdStr.startsWith("0x")) {
+			return chainIdStr.toLowerCase();
+		}
+
+		// Convert numeric string to hex
+		const numericChainId = parseInt(chainIdStr, 10);
+		if (isNaN(numericChainId)) {
+			console.warn(`Invalid chain ID: ${chainId}, defaulting to 0x1`);
+			return "0x1";
+		}
+
+		return `0x${numericChainId.toString(16)}`;
 	}
 
 	// Contract interaction methods

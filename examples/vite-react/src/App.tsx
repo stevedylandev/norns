@@ -37,7 +37,7 @@ function App() {
 			</div>
 			<h1>Vite + React</h1>
 			<div className="card">
-				<connect-wallet ref={walletRef}></connect-wallet>
+				<connect-wallet chain-id="1" ref={walletRef}></connect-wallet>
 			</div>
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more
