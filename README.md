@@ -48,7 +48,6 @@ Still figuring this out, suggestions and examples welcome!
 
 - [x] Connect Wallet
 - [x] Contract Call
-- [ ] TX Toasts?
 - [ ] Contract State (similar to contract call but auto loads the state)
 - [x] Framework compatability
   - [x] React
