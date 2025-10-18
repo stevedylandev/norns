@@ -54,8 +54,7 @@ Still figuring this out, suggestions and examples welcome!
   - [x] Svelte
   - [x] Vue
 - [x] General types through JSDoc?
-- [ ] Add tailwindcss class/className prop
-- [ ] Styles override if shadcn present?
+- [x] Add tailwindcss class/className prop
 
 ## Contributing
 
