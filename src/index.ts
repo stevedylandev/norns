@@ -24,7 +24,7 @@ interface NornsConfig {
 }
 
 const DEFAULT_CONFIG: NornsConfig = {
-	components: "components",
+	components: "src/components",
 	includeTypes: true,
 };
 
