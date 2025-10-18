@@ -9,7 +9,10 @@ Some of the first crypto apps we build were in React, and it's possible we might
 
 Web components are independant pieces of Javascript that can be imported to plain HTML but also frameworks as well. They're atomic, existing on their own and able to out-last any framework as long as we keep using Javscript (unfortunately I think that is the case). Some notable existing web component libraries include [Material Web](https://github.com/material-components/material-web) and [Web Awesome](https://github.com/shoelace-style/webawesome).
 
-The goal of Norns is to provide the Ethereum ecosystem a set of simple yet powerful web components for building decentralized applications. The advantage we have today is that we've experienced good DX from modern frameworks, so we have the ability to build components that feel familiar to devs building UIs for smart contracts. We will start small but slowly grow the offering as we get a better feel for what devs need; check out the [Roadmap](#roadmap) for more information.
+The goal of Norns is to provide the Ethereum ecosystem a set of simple yet powerful web components for building decentralized applications. The advantage we have today is that we've experienced good DX from modern frameworks, so we have the ability to build components that feel familiar to devs building UIs for smart contracts.
+
+>[!NOTE]
+> This project is still in early development, so if you have ideas, bugs, or feature requests, just open an issue!
 
 ## Quickstart
 
