@@ -48,7 +48,7 @@ Still figuring this out, suggestions and examples welcome!
 
 - [x] Connect Wallet
 - [x] Contract Call
-- [ ] Contract State (similar to contract call but auto loads the state)
+- [x] Contract State (similar to contract call but auto loads the state)
 - [x] Framework compatability
   - [x] React
   - [x] Svelte
