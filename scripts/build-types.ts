@@ -7,6 +7,7 @@ const COMPONENTS_DIR = "src/components";
 const OUTPUT_DIR = "dist";
 const REACT_OUTPUT = "custom-elements-jsx.ts";
 const SVELTE_OUTPUT = "custom-elements-svelte.ts";
+const VUE_OUTPUT = "custom-elements-vue.ts";
 const TYPESCRIPT_OUTPUT = "custom-elements.ts";
 
 interface ComponentInfo {
@@ -194,6 +195,44 @@ export {};
 `;
 }
 
+function generateVueTypes(components: ComponentInfo[]): string {
+	const globalComponents = components
+		.map((comp) => {
+			const attributeProps = comp.attributes
+				.map((attr) => `      '${attr}'?: string;`)
+				.join("\n");
+
+			const eventHandlers = comp.events
+				.map((event) => {
+					// Convert to camelCase for Vue's @event syntax
+					const camelEvent = event
+						.split("-")
+						.map((word, i) =>
+							i === 0 ? word : word.charAt(0).toUpperCase() + word.slice(1),
+						)
+						.join("");
+					return `      'on${camelEvent.charAt(0).toUpperCase() + camelEvent.slice(1)}'?: (event: CustomEvent) => void;`;
+				})
+				.join("\n");
+
+			const allProps = [attributeProps, eventHandlers]
+				.filter((p) => p)
+				.join("\n");
+
+			return `    '${comp.tagName}': {\n${allProps}\n    };`;
+		})
+		.join("\n");
+
+	return `declare module 'vue' {
+  export interface GlobalComponents {
+${globalComponents}
+  }
+}
+
+export {};
+`;
+}
+
 function toPascalCase(str: string): string {
 	return str
 		.split("-")
@@ -230,6 +269,11 @@ async function main() {
 		const svelteTypesCode = generateSvelteTypes(components);
 		await writeFile(join(OUTPUT_DIR, SVELTE_OUTPUT), svelteTypesCode);
 		console.log(`✅ Generated Svelte types: ${SVELTE_OUTPUT}`);
+
+		// Generate Vue types
+		const vueTypesCode = generateVueTypes(components);
+		await writeFile(join(OUTPUT_DIR, VUE_OUTPUT), vueTypesCode);
+		console.log(`✅ Generated Vue types: ${VUE_OUTPUT}`);
 
 		// Generate TypeScript types
 		const tsTypesCode = generateTypeScriptTypes(components);

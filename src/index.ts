@@ -21,7 +21,7 @@ const CONFIG_FILE = "norns.json";
 interface NornsConfig {
 	components: string;
 	includeTypes?: boolean;
-	framework?: "typescript" | "react" | "svelte";
+	framework?: "typescript" | "react" | "svelte" | "vue";
 }
 
 const DEFAULT_CONFIG: NornsConfig = {
@@ -110,14 +110,15 @@ async function init() {
 		includeTypesResponse.toLowerCase() !== "no";
 
 	// Get framework selection
-	let framework: "typescript" | "react" | "svelte" = "typescript";
+	let framework: "typescript" | "react" | "svelte" | "vue" = "typescript";
 	if (includeTypes) {
 		console.log(colors.blue("\n▸ Select your framework:"));
 		console.log(colors.cyan("  1. TypeScript (standard)"));
 		console.log(colors.cyan("  2. React"));
 		console.log(colors.cyan("  3. Svelte"));
+		console.log(colors.cyan("  4. Vue"));
 
-		const frameworkChoice = await promptUser("Enter your choice (1-3)", "1");
+		const frameworkChoice = await promptUser("Enter your choice (1-4)", "1");
 
 		switch (frameworkChoice) {
 			case "1":
@@ -128,6 +129,9 @@ async function init() {
 				break;
 			case "3":
 				framework = "svelte";
+				break;
+			case "4":
+				framework = "vue";
 				break;
 			default:
 				console.log(
@@ -247,6 +251,9 @@ async function addComponent(componentName: string | undefined) {
 					break;
 				case "svelte":
 					typesFileName = "custom-elements-svelte.ts";
+					break;
+				case "vue":
+					typesFileName = "custom-elements-vue.ts";
 					break;
 				case "typescript":
 				default:

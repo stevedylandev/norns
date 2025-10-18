@@ -1,0 +1,5 @@
+{
+  "components": "src/components",
+  "includeTypes": true,
+  "framework": "vue"
+}
