@@ -68,12 +68,32 @@ async function buildComponents() {
 
 		if (componentStartIndex > 0) {
 			// Dependencies are at the top (before the component class)
-			const dependencies = lines.slice(0, componentStartIndex).join("\n");
-			const componentCode = lines.slice(componentStartIndex).join("\n");
+			let dependencies = lines.slice(0, componentStartIndex).join("\n");
+			let componentCode = lines.slice(componentStartIndex).join("\n");
 
-			// Create new content with component first, then dependencies
+			// Replace 'var' with 'const' in dependencies to prevent hoisting issues
+			// This ensures variables are not hoisted as undefined when code is reorganized
+			dependencies = dependencies.replace(/\bvar\s+/g, "const ");
+
+			// Find and extract the customElements.define() call
+			const defineRegex = /customElements\.define\([^)]+\);?\n?/;
+			const defineMatch = componentCode.match(defineRegex);
+			let defineCall = "";
+
+			if (defineMatch) {
+				defineCall = defineMatch[0];
+				// Remove the define call from component code
+				componentCode = componentCode.replace(defineRegex, "");
+			}
+
+			// Create new content wrapped in IIFE to avoid global namespace pollution
 			const newContent = `// User-editable ${componentName} component
 // @noble/hashes are bundled at the bottom of this file
+
+(function() {
+// ==========================================
+// COMPONENT CODE
+// ==========================================
 
 ${componentCode}
 
@@ -81,7 +101,11 @@ ${componentCode}
 // BUNDLED DEPENDENCIES BELOW
 // ==========================================
 
-${dependencies}`;
+${dependencies}
+
+// Register custom element after dependencies are loaded
+${defineCall}
+})();`;
 
 			await writeFile(
 				`dist/components/${componentName}.js`,
