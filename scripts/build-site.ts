@@ -24,6 +24,10 @@ const updatedHtml = htmlContent
 		`<script src="components/contract-call.js"></script>`,
 	)
 	.replace(
+		`<script src="../src/components/contract-read.js"></script>`,
+		`<script src="components/contract-read.js"></script>`,
+	)
+	.replace(
 		`<link rel="stylesheet" href="tailwindcss" />`,
 		`<link rel="stylesheet" href="output.css" />`,
 	);
