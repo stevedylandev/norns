@@ -16,7 +16,8 @@
 		"build:components": "bun scripts/build-components.ts",
 		"build:types": "bun scripts/build-types.ts",
 		"build:site": "bun scripts/build-site",
-		"dev": "bun site/index.html --console"
+		"dev": "bun site/index.html --console",
+		"preview": "bun site-dist/index.html --console"
 	},
 	"keywords": [
 		"web-components",
