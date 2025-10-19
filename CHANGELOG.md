@@ -1,3 +1,13 @@
+## [0.1.1] - 2025-10-19
+
+### ⚙️ Miscellaneous Tasks
+
+- Added changelog
+- Removed unused files
+- Added preview script
+- Added replacement script for site build
+- Refactored build script to wrap in immediately invoked function
+- Version bump
 ## [0.1.0] - 2025-10-18
 
 ### 🚀 Features
